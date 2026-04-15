@@ -145,7 +145,6 @@
     }
 
     /* ========== CTA ========== */
-
     .cta-btn {
       display: inline-block;
       font-family: var(--font-body);
@@ -169,7 +168,32 @@
     }
 
     .text-section.first-section {
-      padding-top: 88px;
+      padding-top: 140px;
+      padding-bottom: 80px;
+      text-align: center;
+      background: radial-gradient(ellipse at 50% 0%, rgba(74, 234, 220, 0.06) 0%, transparent 70%);
+    }
+
+    .text-section.first-section .content-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .text-section.first-section h2 {
+      font-size: clamp(28px, 5vw, 44px);
+      line-height: 1.2;
+      letter-spacing: 0.5px;
+      margin-bottom: 24px;
+      max-width: 620px;
+    }
+
+    .hero-subhead {
+      font-size: 18px;
+      color: var(--cyan) !important;
+      margin-bottom: 36px !important;
+      max-width: 500px;
+      opacity: 0.9;
     }
 
     .text-section.alt { background: var(--bg-secondary); }
@@ -362,6 +386,174 @@
       letter-spacing: 1px;
     }
 
+    /* ========== PROBLEM SECTION ENHANCEMENTS ========== */
+
+    /* Pivot line — "Here's what's actually going on." */
+    .pivot-line {
+      border-left: 2px solid var(--cyan-dim);
+      padding-left: 16px;
+      color: var(--text-primary) !important;
+      font-style: italic;
+      margin-top: 20px !important;
+      margin-bottom: 20px !important;
+    }
+
+    /* Identity contrast cards */
+    .identity-card {
+      padding: 20px 24px;
+      border-radius: 8px;
+      margin: 16px 0;
+    }
+
+    .identity-card.reactive {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .identity-card.agency {
+      background: var(--cyan-glow);
+      border: 1px solid var(--cyan-dim);
+    }
+
+    .identity-card p {
+      margin-bottom: 0 !important;
+    }
+
+    /* Payoff line */
+    .payoff-line {
+      color: var(--text-primary) !important;
+      margin-top: 20px !important;
+    }
+
+    /* ========== SHIFTS SECTION ENHANCEMENTS ========== */
+    #shifts .text-section-inner h3 {
+      border-top: 1px solid var(--border);
+      padding-top: 28px;
+      margin-top: 32px;
+      color: var(--cyan);
+    }
+
+    #shifts .text-section-inner h3::before {
+      content: '— ';
+      opacity: 0.5;
+    }
+
+    #shifts .text-section-inner h2 {
+      margin-bottom: 8px;
+    }
+
+    /* ========== DIMENSIONS SECTION ENHANCEMENTS ========== */
+    #dimensions {
+      background: linear-gradient(180deg, var(--bg-secondary) 0%, rgba(14, 14, 22, 0.95) 100%);
+    }
+
+    .dimensions-teaser {
+      font-style: italic;
+      color: var(--cyan) !important;
+      opacity: 0.8;
+      margin-top: 16px !important;
+    }
+
+    /* ========== ASSESSMENT CTA SECTION ENHANCEMENTS ========== */
+    #assessment {
+      padding-top: 60px !important;
+      padding-bottom: 60px !important;
+      text-align: center;
+    }
+
+    #assessment .content-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    #assessment h2 {
+      max-width: 560px;
+    }
+
+    #assessment p {
+      max-width: 520px;
+    }
+
+    #assessment .cta-center {
+      margin-top: 36px;
+    }
+
+    #assessment .cta-btn {
+      padding: 14px 40px;
+      font-size: 15px;
+      box-shadow: 0 0 30px rgba(74, 234, 220, 0.15), 0 4px 16px rgba(0, 0, 0, 0.4);
+    }
+
+    #assessment .cta-btn:hover {
+      box-shadow: 0 0 40px rgba(74, 234, 220, 0.25), 0 4px 20px rgba(0, 0, 0, 0.5);
+    }
+
+    /* ========== WHO THIS IS FOR ENHANCEMENTS ========== */
+    .resonates-yes p {
+      padding-left: 20px;
+      position: relative;
+      margin-bottom: 14px;
+    }
+
+    .resonates-yes p::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 11px;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--cyan);
+      opacity: 0.7;
+    }
+
+    .resonates-no p {
+      color: var(--text-muted);
+      padding-left: 20px;
+      position: relative;
+      margin-bottom: 12px;
+    }
+
+    .resonates-no p::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 11px;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--text-muted);
+      opacity: 0.4;
+    }
+
+    #who h3 {
+      margin-top: 36px;
+      margin-bottom: 16px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    /* ========== FADE-IN ANIMATION ========== */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(18px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .reveal {
+      opacity: 0;
+    }
+
+    .reveal.visible {
+      animation: fadeInUp 0.55s ease forwards;
+    }
+
     /* ========== RESPONSIVE ========== */
     @media (max-width: 768px) {
       nav { padding: 0 20px; }
@@ -389,6 +581,8 @@
       .text-section { padding: 32px 20px; }
       .how-it-works { padding: 32px 20px; }
       .about-section { padding: 32px 20px; }
+
+      .text-section.first-section { padding-top: 110px; padding-bottom: 56px; }
     }
 
     @media (max-width: 480px) {
@@ -416,9 +610,9 @@
   <!-- HERO -->
   <section class="text-section first-section" id="hero">
     <div class="content-col">
-      <h2>Learn how your identity is preventing you from producing the results you're capable of.</h2>
-      <p style="font-size: 18px; color: var(--text-primary); margin-bottom: 24px;">Get ranked on Agency, Clarity, Power, and 4 more dimensions of effectiveness — in 10 minutes.</p>
-      <a href="#assessment" class="cta-btn">Take the Assessment — 10 Minutes</a>
+      <h2 class="reveal">Learn how your identity is preventing you from producing the results you're capable of.</h2>
+      <p class="hero-subhead reveal">Get ranked on Agency, Clarity, Power, and 4 more dimensions of effectiveness — in 10 minutes.</p>
+      <a href="#assessment" class="cta-btn reveal">Take the Assessment — 10 Minutes</a>
     </div>
   </section>
 
@@ -429,13 +623,17 @@
     <div class="content-col">
       <p>You know you're capable of more than your life currently reflects. That's not delusion — it's pattern recognition. You can see the gap between what you could be doing and what you're actually producing. You've probably been able to see it for a long time.</p>
       <p>And you've tried to close it. You've read the books, maybe tried therapy, tried new systems and routines. Some of it helped for a while. None of it held. Not because you didn't try hard enough, and not because those things are worthless. They just weren't addressing the actual problem.</p>
-      <p>Here's what's actually going on.</p>
+      <p class="pivot-line">Here's what's actually going on.</p>
       <p>You are operating from an identity — a set of deeply held beliefs about who you are, how the world works, and what you're capable of — that was shaped largely without your input. Your environment, your upbringing, the responses that were modeled and reinforced around you built this identity before you had any say in it.</p>
       <p>This identity isn't something you think about. It's something you think from. It doesn't feel like a belief system. It feels like reality — like "this is just how I am" or "this is just how things work."</p>
       <p>And it runs everything. It determines what you notice and what you overlook. What you attempt and what you avoid. How you interpret what happens to you. How you spend your time. Where your energy goes. All of it — before you consciously choose anything.</p>
-      <p>When your identity says the world is something that happens to you, your mind defaults to scanning for threats, accounting for losses, and building narratives about why things aren't working. You spend your energy coping — and the coping feels rational because the identity makes it the only thing that makes sense.</p>
-      <p>When your identity says you are someone who designs and builds their life, your mind defaults to scanning for opportunities, assessing your resources, and developing approaches. You spend your energy creating. Same intelligence. Same potential. Different identity. Different results.</p>
-      <p>Every technique, system, and insight you've ever tried was operating on top of an identity that may have been quietly filtering it out. That's why it didn't stick. You were upgrading the software while the operating system kept reverting to its defaults.</p>
+      <div class="identity-card reactive">
+        <p>When your identity says the world is something that happens to you, your mind defaults to scanning for threats, accounting for losses, and building narratives about why things aren't working. You spend your energy coping — and the coping feels rational because the identity makes it the only thing that makes sense.</p>
+      </div>
+      <div class="identity-card agency">
+        <p>When your identity says you are someone who designs and builds their life, your mind defaults to scanning for opportunities, assessing your resources, and developing approaches. You spend your energy creating. Same intelligence. Same potential. Different identity. Different results.</p>
+      </div>
+      <p class="payoff-line">Every technique, system, and insight you've ever tried was operating on top of an identity that may have been quietly filtering it out. That's why it didn't stick. You were upgrading the software while the operating system kept reverting to its defaults.</p>
     </div>
   </section>
 
@@ -443,25 +641,25 @@
 
   <!-- WHAT BECOMES POSSIBLE -->
   <section class="text-section" id="shifts">
-    <div class="content-col">
-      <h2>When the identity shifts, specific things change.</h2>
+    <div class="content-col text-section-inner">
+      <h2 class="reveal">When the identity shifts, specific things change.</h2>
 
-      <h3>The gap between deciding and doing closes.</h3>
+      <h3 class="reveal">The gap between deciding and doing closes.</h3>
       <p>Right now, there's a delay between knowing what you want to do and actually doing it. You research more, ask more people, wait for a feeling of certainty that doesn't come. That delay isn't caution — it's an identity that doesn't fully trust its own judgment. When that shifts, you move faster. You learn faster. You complete more cycles of trying, learning, and adjusting in a month than you currently complete in six.</p>
 
-      <h3>Your effort stops rising and falling with other people's reactions.</h3>
+      <h3 class="reveal">Your effort stops rising and falling with other people's reactions.</h3>
       <p>When recognition comes, you're energized. When it doesn't, something quietly deflates. This isn't a character flaw — it's an identity that sources its sense of value from the outside. When that shifts, your output stabilizes. You work at the same level whether anyone notices or not. And that consistency is what produces results that actually compound over time.</p>
 
-      <h3>The same problems stop coming back.</h3>
+      <h3 class="reveal">The same problems stop coming back.</h3>
       <p>You've noticed that certain issues keep resurfacing — in your relationships, your work, your internal dialogue. Different situations, same underlying pattern. They keep returning because they're being misidentified. You're addressing the version of the problem that your current identity can see, which isn't the actual root. When your perception sharpens, you see the real issue, address it once, and it stays solved.</p>
 
-      <h3>You act before you feel ready.</h3>
+      <h3 class="reveal">You act before you feel ready.</h3>
       <p>Right now, uncertainty is a stop sign. If you can't predict how something will turn out, you wait — or you over-prepare as a substitute for acting. That's an identity that requires guaranteed outcomes before it will engage. When that shifts, you start treating uncertainty as information to be gathered rather than a threat to be avoided. You learn from experience instead of theorizing about what might happen.</p>
 
-      <h3>You stop managing other people and start directing yourself.</h3>
+      <h3 class="reveal">You stop managing other people and start directing yourself.</h3>
       <p>A surprising amount of your energy goes toward trying to get other people to behave differently — agree with you, see your point, change their approach. That's influence directed outward. When it redirects inward — toward your own response, your own approach, your own behavior — most friction disappears. And the energy that was going to conflict becomes available for building things.</p>
 
-      <h3>You start seeing around corners.</h3>
+      <h3 class="reveal">You start seeing around corners.</h3>
       <p>Right now, you're mostly reacting — dealing with what's in front of you, getting caught off guard by things you didn't anticipate. As your ability to read situations deepens, you start noticing dynamics that aren't on the surface. You anticipate what's coming before it arrives. You make decisions based on where things are heading, not just where things are.</p>
     </div>
   </section>
@@ -471,25 +669,25 @@
   <!-- THE DIMENSIONS -->
   <section class="text-section alt" id="dimensions">
     <div class="content-col">
-      <h2>The assessment ranks you across 7 measurable dimensions of effectiveness.</h2>
+      <h2 class="reveal">The assessment ranks you across 7 measurable dimensions of effectiveness.</h2>
       <p>Here are three of them:</p>
 
-      <div class="offer-block">
+      <div class="offer-block reveal">
         <h3>Agency</h3>
         <p>Are you authoring your life or reacting to it? This ranks how much you operate as the cause of what happens versus someone things happen to.</p>
       </div>
 
-      <div class="offer-block">
+      <div class="offer-block reveal">
         <h3>Clarity</h3>
         <p>How accurately are you seeing what's actually going on? Most people are solving problems that don't exist while missing the ones that do. This ranks the gap between your perception and reality.</p>
       </div>
 
-      <div class="offer-block">
+      <div class="offer-block reveal">
         <h3>Power</h3>
         <p>Where is your influence directed? This ranks whether your energy goes toward controlling other people's behavior or directing your own.</p>
       </div>
 
-      <p>Plus four more dimensions that most people have never thought to measure — but that quietly shape everything from how you handle uncertainty to where your sense of worth comes from.</p>
+      <p class="dimensions-teaser">Plus four more dimensions that most people have never thought to measure — but that quietly shape everything from how you handle uncertainty to where your sense of worth comes from.</p>
       <p>You'll get a rank for each dimension and an overall effectiveness profile. Most people find that they're stronger in some areas than they expected — and that one or two dimensions are quietly undermining everything else.</p>
     </div>
   </section>
@@ -499,7 +697,7 @@
   <!-- ASSESSMENT CTA -->
   <section class="text-section" id="assessment">
     <div class="content-col">
-      <h2>10 minutes. 7 dimensions. A picture of what's been invisible.</h2>
+      <h2 class="reveal">10 minutes. 7 dimensions. A picture of what's been invisible.</h2>
       <p>The assessment won't tell you what to do. It will show you what's already operating — the specific patterns shaping how you make decisions, handle uncertainty, spend your time, and evaluate yourself.</p>
       <p>No cost. No commitment. No pitch on the other side. Just a clear look at the thing you've been feeling but haven't been able to name.</p>
       <div class="cta-center">
@@ -513,16 +711,20 @@
   <!-- WHO THIS IS FOR -->
   <section class="text-section alt" id="who">
     <div class="content-col">
-      <h2>This will resonate with you if:</h2>
-      <p>You've felt for a while that something is between you and your potential, but you haven't been able to name it.</p>
-      <p>You've tried other approaches — content, therapy, systems — and they helped partially but didn't fundamentally change the pattern.</p>
-      <p>You're more interested in understanding what's actually happening than in being told what you want to hear.</p>
-      <p>You're willing to look honestly at yourself, including the parts that might be contributing to the problem.</p>
+      <h2 class="reveal">This will resonate with you if:</h2>
+      <div class="resonates-yes">
+        <p>You've felt for a while that something is between you and your potential, but you haven't been able to name it.</p>
+        <p>You've tried other approaches — content, therapy, systems — and they helped partially but didn't fundamentally change the pattern.</p>
+        <p>You're more interested in understanding what's actually happening than in being told what you want to hear.</p>
+        <p>You're willing to look honestly at yourself, including the parts that might be contributing to the problem.</p>
+      </div>
 
       <h3>It probably won't resonate if:</h3>
-      <p>You're certain your problems are entirely caused by other people or circumstances.</p>
-      <p>You're looking for a motivational boost rather than a real understanding of what's going on.</p>
-      <p>You're not interested in examining your own patterns.</p>
+      <div class="resonates-no">
+        <p>You're certain your problems are entirely caused by other people or circumstances.</p>
+        <p>You're looking for a motivational boost rather than a real understanding of what's going on.</p>
+        <p>You're not interested in examining your own patterns.</p>
+      </div>
     </div>
   </section>
 
@@ -583,6 +785,23 @@
       citList.classList.toggle('open');
     });
 
+    // Fade-in on scroll
+    const revealEls = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          // Stagger siblings in the same parent
+          const siblings = Array.from(entry.target.parentElement.querySelectorAll('.reveal:not(.visible)'));
+          const idx = siblings.indexOf(entry.target);
+          setTimeout(() => {
+            entry.target.classList.add('visible');
+          }, idx * 80);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+
+    revealEls.forEach(el => observer.observe(el));
   </script>
 </body>
 </html>
