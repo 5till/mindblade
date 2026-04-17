@@ -412,7 +412,7 @@
       <div class="dlg-text" id="dlg-text"></div>
       <div class="dlg-options" id="dlg-options"></div>
       <div class="dlg-reaction" id="dlg-reaction" style="display:none"></div>
-      <div class="dlg-prompt" id="dlg-prompt">PRESS 1 – 4 TO RESPOND</div>
+      <div class="dlg-prompt" id="dlg-prompt">↑↓ SELECT  ·  SPACE / ENTER CONFIRM</div>
     </div>
   </div>
 
@@ -461,16 +461,187 @@ const ZONE1_MAP = [
   [  1, 0, 0, 1, 0, 0, 2, 0, 0, 0, 0, 0, 0, 2, 0, 0, 1, 0, 0, 1], // 11
   [  1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1], // 12
   [  1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], // 13
+  [  1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1], // 14
+];
+
+// ============================================================
+// ZONE MAPS — zones 1-6  (20 cols × 15 rows, 0-indexed)
+// ============================================================
+const ZONE2_MAP = [ // THE MIRE
+//   0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19
+  [  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], // 0
+  [  1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1], // 1
+  [  1, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], // 2
+  [  1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1], // 3
+  [  1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], // 4
+  [  1, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 1], // 5
+  [  1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 1], // 6
+  [  1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], // 7
+  [  1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1], // 8
+  [  1, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], // 9
+  [  1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1], // 10
+  [  1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 1], // 11
+  [  1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], // 12
+  [  1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], // 13
+  [  1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1], // 14
+];
+
+const ZONE3_MAP = [ // THE TOWER
+  [  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], // 0
+  [  1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], // 1
+  [  1, 0, 1, 1, 1, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 0, 1], // 2
+  [  1, 0, 1, 0, 0, 2, 0, 1, 0, 0, 0, 0, 1, 0, 2, 0, 0, 1, 0, 1], // 3
+  [  1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1], // 4
+  [  1, 0, 1, 1, 1, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 0, 1], // 5
+  [  1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], // 6
+  [  1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], // 7
+  [  1, 0, 1, 1, 1, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 0, 1], // 8
+  [  1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1], // 9
+  [  1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1], // 10
+  [  1, 0, 1, 0, 0, 2, 0, 1, 0, 0, 0, 0, 1, 0, 2, 0, 0, 1, 0, 1], // 11
+  [  1, 0, 1, 1, 1, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 0, 1], // 12
+  [  1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], // 13
+  [  1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1], // 14
+];
+
+const ZONE4_MAP = [ // THE CAVE
+  [  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], // 0
+  [  1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], // 1
+  [  1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1], // 2
+  [  1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1], // 3
+  [  1, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 1], // 4
+  [  1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1], // 5
+  [  1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1], // 6
+  [  1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1], // 7
+  [  1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], // 8
+  [  1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1], // 9
+  [  1, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 1], // 10
+  [  1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1], // 11
+  [  1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], // 12
+  [  1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], // 13
+  [  1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1], // 14
+];
+
+const ZONE5_MAP = [ // THE ARENA
+  [  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], // 0
+  [  1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], // 1
+  [  1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1], // 2
+  [  1, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1, 0, 0, 1], // 3
+  [  1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], // 4
+  [  1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], // 5
+  [  1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], // 6
+  [  1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], // 7
+  [  1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], // 8
+  [  1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], // 9
+  [  1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], // 10
+  [  1, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1, 0, 0, 1], // 11
+  [  1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1], // 12
+  [  1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], // 13
+  [  1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1], // 14
+];
+
+const ZONE6_MAP = [ // THE DARK
+  [  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], // 0
+  [  1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], // 1
+  [  1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1], // 2
+  [  1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1], // 3
+  [  1, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 1], // 4
+  [  1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1], // 5
+  [  1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1], // 6
+  [  1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1], // 7
+  [  1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], // 8
+  [  1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1], // 9
+  [  1, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 1], // 10
+  [  1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1], // 11
+  [  1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], // 12
+  [  1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], // 13
+  [  1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1], // 14
+];
+
+const ZONE7_MAP = [ // THE SUMMIT
+  [  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], // 0
+  [  1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], // 1
+  [  1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], // 2
+  [  1, 0, 0, 1, 0, 0, 2, 0, 0, 0, 0, 0, 0, 2, 0, 0, 1, 0, 0, 1], // 3
+  [  1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], // 4
+  [  1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1], // 5
+  [  1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], // 6
+  [  1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], // 7
+  [  1, 0, 0, 1, 0, 0, 2, 0, 0, 0, 0, 0, 0, 2, 0, 0, 1, 0, 0, 1], // 8
+  [  1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], // 9
+  [  1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1], // 10
+  [  1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], // 11
+  [  1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], // 12
+  [  1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], // 13
   [  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], // 14
+];
+
+// ============================================================
+// ZONE PALETTES & NAMES
+// ============================================================
+const ZONE_PALETTES = [
+  { bg:'#070b10', floor:'#0c1822', wall:'#1c2a3a', wallTop:'#263848', wallBot:'#121e2c', mortar:'#101820' },
+  { bg:'#060c09', floor:'#081410', wall:'#142210', wallTop:'#1c2e18', wallBot:'#0c1a0c', mortar:'#081008' },
+  { bg:'#0c0c14', floor:'#12121e', wall:'#28244a', wallTop:'#32305a', wallBot:'#1c1838', mortar:'#0c0a1c' },
+  { bg:'#08080e', floor:'#0c0c16', wall:'#1c1a2e', wallTop:'#26243c', wallBot:'#141224', mortar:'#080818' },
+  { bg:'#100c08', floor:'#180e06', wall:'#2e1a0c', wallTop:'#3c2410', wallBot:'#1e0e06', mortar:'#100806' },
+  { bg:'#040408', floor:'#060610', wall:'#0e0e1e', wallTop:'#12122a', wallBot:'#080816', mortar:'#04040c' },
+  { bg:'#080e18', floor:'#0c1422', wall:'#1e2e44', wallTop:'#263a56', wallBot:'#141e34', mortar:'#0c1220' },
+];
+
+const ZONE_NAMES = [
+  'ZONE I  \u2014  THE CROSSROADS',
+  'ZONE II  \u2014  THE MIRE',
+  'ZONE III  \u2014  THE TOWER',
+  'ZONE IV  \u2014  THE CAVE',
+  'ZONE V  \u2014  THE ARENA',
+  'ZONE VI  \u2014  THE DARK',
+  'ZONE VII  \u2014  THE SUMMIT',
 ];
 
 // NPC visual definitions per zone (index = zone number)
 const ZONE_NPCS = [
-  [
+  [ // Zone 0: Crossroads
     { x: 6,  y: 3,  color: '#4a7a8a', darkColor: '#2a4a5a' },
     { x: 13, y: 3,  color: '#7a5a8a', darkColor: '#4a3a5a' },
     { x: 6,  y: 11, color: '#8a7040', darkColor: '#5a4828' },
     { x: 13, y: 11, color: '#4a7a5a', darkColor: '#2a4a3a' },
+  ],
+  [ // Zone 1: The Mire
+    { x: 6,  y: 2,  color: '#3a6a4a', darkColor: '#1a3a28' },
+    { x: 14, y: 6,  color: '#5a7a40', darkColor: '#303a20' },
+    { x: 4,  y: 9,  color: '#4a8a5a', darkColor: '#284a30' },
+    { x: 15, y: 11, color: '#2a5a3a', darkColor: '#142e1e' },
+  ],
+  [ // Zone 2: The Tower
+    { x: 5,  y: 3,  color: '#6a5a8a', darkColor: '#3a2a5a' },
+    { x: 14, y: 3,  color: '#5a4a7a', darkColor: '#2a2048' },
+    { x: 5,  y: 11, color: '#7a6a9a', darkColor: '#3a3060' },
+    { x: 14, y: 11, color: '#8a5a7a', darkColor: '#4a2a40' },
+  ],
+  [ // Zone 3: The Cave
+    { x: 5,  y: 4,  color: '#5a4a6a', darkColor: '#2c2038' },
+    { x: 14, y: 4,  color: '#4a7a8a', darkColor: '#20404a' },
+    { x: 5,  y: 10, color: '#6a3a6a', darkColor: '#3a1a3a' },
+    { x: 14, y: 10, color: '#3a5a7a', darkColor: '#1a2c3e' },
+  ],
+  [ // Zone 4: The Arena
+    { x: 3,  y: 3,  color: '#8a4a30', darkColor: '#4a2018' },
+    { x: 15, y: 3,  color: '#9a5a20', darkColor: '#5a3010' },
+    { x: 3,  y: 11, color: '#7a3a28', darkColor: '#3e1c14' },
+    { x: 15, y: 11, color: '#8a6a20', darkColor: '#4a3a10' },
+  ],
+  [ // Zone 5: The Dark
+    { x: 6,  y: 4,  color: '#2a3a5a', darkColor: '#141e2e' },
+    { x: 13, y: 4,  color: '#3a2a5a', darkColor: '#1e1430' },
+    { x: 6,  y: 10, color: '#2a4a6a', darkColor: '#142438' },
+    { x: 13, y: 10, color: '#3a3a5a', darkColor: '#1e1e30' },
+  ],
+  [ // Zone 6: The Summit
+    { x: 6,  y: 3,  color: '#7a8a9a', darkColor: '#404e5a' },
+    { x: 13, y: 3,  color: '#8a9aaa', darkColor: '#485460' },
+    { x: 6,  y: 8,  color: '#6a7a8a', darkColor: '#38444e' },
+    { x: 13, y: 8,  color: '#c0c8d8', darkColor: '#686e80' },
   ],
 ];
 
@@ -482,7 +653,13 @@ const ZONE_NPCS = [
 // npcPositions[zoneIdx] maps local NPC index → {x,y} matching ZONE_NPCS order
 const ContentDatabase = {
   npcPositions: [
-    [ {x:6,y:3}, {x:13,y:3}, {x:6,y:11}, {x:13,y:11} ], // zone 0
+    [ {x:6,y:3},  {x:13,y:3},  {x:6,y:11},  {x:13,y:11} ], // zone 0
+    [ {x:6,y:2},  {x:14,y:6},  {x:4,y:9},   {x:15,y:11} ], // zone 1
+    [ {x:5,y:3},  {x:14,y:3},  {x:5,y:11},  {x:14,y:11} ], // zone 2
+    [ {x:5,y:4},  {x:14,y:4},  {x:5,y:10},  {x:14,y:10} ], // zone 3
+    [ {x:3,y:3},  {x:15,y:3},  {x:3,y:11},  {x:15,y:11} ], // zone 4
+    [ {x:6,y:4},  {x:13,y:4},  {x:6,y:10},  {x:13,y:10} ], // zone 5
+    [ {x:6,y:3},  {x:13,y:3},  {x:6,y:8},   {x:13,y:8}  ], // zone 6
   ],
 
   encounters: [
@@ -1035,11 +1212,13 @@ const ScoringState = {
   rawScores: { ag: 0, cl: 0, di: 0, va: 0, vl: 0, se: 0, po: 0 },
   completedEncounters: new Set(),
   optionOrders: {},
+  lastChoices: {},   // encounterIdx → scores object of the chosen option
 
   reset() {
     this.rawScores = { ag: 0, cl: 0, di: 0, va: 0, vl: 0, se: 0, po: 0 };
     this.completedEncounters = new Set();
     this.optionOrders = {};
+    this.lastChoices = {};
   },
 
   fromSave(data) {
@@ -1049,6 +1228,7 @@ const ScoringState = {
       : { ag: 0, cl: 0, di: 0, va: 0, vl: 0, se: 0, po: 0 };
     this.completedEncounters = new Set(data.completedEncounters || []);
     this.optionOrders = data.optionOrders ? { ...data.optionOrders } : {};
+    this.lastChoices  = data.lastChoices  ? { ...data.lastChoices  } : {};
   },
 
   toSave() {
@@ -1056,6 +1236,7 @@ const ScoringState = {
       rawScores: { ...this.rawScores },
       completedEncounters: [...this.completedEncounters],
       optionOrders: { ...this.optionOrders },
+      lastChoices:  { ...this.lastChoices  },
     };
   },
 
@@ -1064,6 +1245,17 @@ const ScoringState = {
       this.rawScores[dim] = (this.rawScores[dim] || 0) + val;
     }
   },
+
+  revert(encounterIdx) {
+    const prev = this.lastChoices[encounterIdx];
+    if (prev) {
+      for (const [dim, val] of Object.entries(prev)) {
+        this.rawScores[dim] = (this.rawScores[dim] || 0) - val;
+      }
+    }
+    this.completedEncounters.delete(encounterIdx);
+    delete this.lastChoices[encounterIdx];
+  },
 };
 
 // ============================================================
@@ -1071,8 +1263,11 @@ const ScoringState = {
 // ============================================================
 const EncounterController = {
   encounterIdx: -1,
-  phase: 'idle',       // 'options' | 'reaction' | 'idle'
-  _reactionTimer: null,
+  phase: 'idle',         // 'options' | 'reaction' | 'idle'
+  selectedIdx: 0,
+  reactionLines: [],
+  reactionPage: 0,
+  _isOracle: false,
 
   start(npcX, npcY) {
     const localIdx = (ContentDatabase.npcPositions[PlayerEntity.zone] || [])
@@ -1081,49 +1276,72 @@ const EncounterController = {
 
     const globalIdx = PlayerEntity.zone * 4 + localIdx;
     if (globalIdx >= ContentDatabase.encounters.length) return;
+
+    // Re-talk: undo previous score contribution and reopen
     if (ScoringState.completedEncounters.has(globalIdx)) {
-      // Already completed — brief "already met" acknowledgment could go here
-      return;
+      ScoringState.revert(globalIdx);
     }
 
     this.encounterIdx = globalIdx;
 
-    // Ensure option order exists for this encounter
     if (!ScoringState.optionOrders[globalIdx]) {
       ScoringState.optionOrders[globalIdx] = seededShuffle([0,1,2,3], globalIdx + Date.now());
     }
 
+    this.selectedIdx = 0;
     this.phase = 'options';
     GameStateMachine.transition(STATES.ENCOUNTER);
     this._renderOptions();
     AudioManager.playInteract();
   },
 
-  selectOption(displayIdx) {
+  moveSelection(delta) {
+    if (this.phase !== 'options') return;
+    this.selectedIdx = (this.selectedIdx + delta + 4) % 4;
+    this._highlightSelected();
+  },
+
+  selectOption() {
     if (this.phase !== 'options') return;
     const enc = ContentDatabase.encounters[this.encounterIdx];
     const order = ScoringState.optionOrders[this.encounterIdx];
-    const realIdx = order[displayIdx];
+    const realIdx = order[this.selectedIdx];
     if (realIdx === undefined) return;
 
     const opt = enc.options[realIdx];
     ScoringState.accumulate(opt.scores);
+    ScoringState.lastChoices[this.encounterIdx] = { ...opt.scores };
     ScoringState.completedEncounters.add(this.encounterIdx);
     PersistenceManager.save(buildSaveState());
 
     console.log('[Score]', JSON.stringify(ScoringState.rawScores));
 
+    this._isOracle = this.encounterIdx === 27;
+    const raw = enc.reactions[realIdx];
+    this.reactionLines = Array.isArray(raw) ? raw : [raw];
+    this.reactionPage = 0;
     this.phase = 'reaction';
-    this._renderReaction(enc.reactions[realIdx]);
-
-    this._reactionTimer = setTimeout(() => this.close(), 2200);
+    this._renderReaction();
   },
 
-  close() {
-    clearTimeout(this._reactionTimer);
+  advanceReaction() {
+    if (this.phase !== 'reaction') return;
+    this.reactionPage++;
+    if (this.reactionPage < this.reactionLines.length) {
+      this._renderReaction();
+    } else {
+      this.close(this._isOracle);
+    }
+  },
+
+  close(goResults) {
     this.phase = 'idle';
     document.getElementById('encounter-overlay').classList.remove('active');
-    GameStateMachine.transition(STATES.PLAYING);
+    if (goResults) {
+      fade(() => GameStateMachine.transition(STATES.RESULTS));
+    } else {
+      GameStateMachine.transition(STATES.PLAYING);
+    }
   },
 
   _renderOptions() {
@@ -1133,7 +1351,7 @@ const EncounterController = {
     document.getElementById('dlg-npc-name').textContent = enc.npcName;
     document.getElementById('dlg-text').textContent = enc.dialogue;
     document.getElementById('dlg-reaction').style.display = 'none';
-    document.getElementById('dlg-prompt').textContent = 'PRESS 1 – 4 TO RESPOND';
+    document.getElementById('dlg-prompt').textContent = '↑↓ SELECT  ·  SPACE / ENTER CONFIRM';
 
     const container = document.getElementById('dlg-options');
     container.style.display = 'grid';
@@ -1141,7 +1359,7 @@ const EncounterController = {
     order.forEach((realIdx, displayIdx) => {
       const opt = enc.options[realIdx];
       const el = document.createElement('div');
-      el.className = 'dlg-option';
+      el.className = 'dlg-option' + (displayIdx === this.selectedIdx ? ' highlighted' : '');
       el.innerHTML = `<span class="opt-num">${displayIdx + 1}</span><span>${opt.text}</span>`;
       container.appendChild(el);
     });
@@ -1149,12 +1367,20 @@ const EncounterController = {
     document.getElementById('encounter-overlay').classList.add('active');
   },
 
-  _renderReaction(reactionText) {
+  _highlightSelected() {
+    const opts = document.querySelectorAll('#dlg-options .dlg-option');
+    opts.forEach((el, i) => el.classList.toggle('highlighted', i === this.selectedIdx));
+  },
+
+  _renderReaction() {
     document.getElementById('dlg-options').style.display = 'none';
     const reactionEl = document.getElementById('dlg-reaction');
     reactionEl.style.display = 'block';
-    reactionEl.textContent = reactionText;
-    document.getElementById('dlg-prompt').textContent = '';
+    reactionEl.textContent = this.reactionLines[this.reactionPage];
+    const hasMore = this.reactionPage < this.reactionLines.length - 1;
+    document.getElementById('dlg-prompt').textContent = hasMore
+      ? 'SPACE / ENTER TO CONTINUE'
+      : 'SPACE / ENTER TO CLOSE';
   },
 };
 
@@ -1294,6 +1520,11 @@ const GameStateMachine = {
       case STATES.ENCOUNTER:
         // encounter-overlay shown by EncounterController
         break;
+      case STATES.ZONE_TRANSITION:
+        break;
+      case STATES.RESULTS:
+        hideAllOverlays();
+        break;
     }
   },
 
@@ -1355,7 +1586,7 @@ const PersistenceManager = {
 // WORLD MAP
 // ============================================================
 const WorldMap = {
-  maps: [ZONE1_MAP],
+  maps: [ZONE1_MAP, ZONE2_MAP, ZONE3_MAP, ZONE4_MAP, ZONE5_MAP, ZONE6_MAP, ZONE7_MAP],
 
   currentMap() { return this.maps[PlayerEntity.zone] || ZONE1_MAP; },
 
@@ -1376,6 +1607,31 @@ const WorldMap = {
       if (this.getTile(x+dx, y+dy) === T.NPC) return { x: x+dx, y: y+dy };
     }
     return null;
+  },
+};
+
+// ============================================================
+// ZONE CONTROLLER
+// ============================================================
+const ZoneController = {
+  transitioning: false,
+
+  trigger() {
+    if (this.transitioning) return;
+    const next = PlayerEntity.zone + 1;
+    if (next > 6) return;
+    this.transitioning = true;
+    GameStateMachine.transition(STATES.ZONE_TRANSITION);
+    AudioManager.playZoneTransition();
+    fade(() => {
+      PlayerEntity.zone = next;
+      PlayerEntity.x    = 9;
+      PlayerEntity.y    = 1;
+      PlayerEntity._positionSet = true;
+      PersistenceManager.save(buildSaveState());
+      GameStateMachine.transition(STATES.PLAYING);
+      this.transitioning = false;
+    });
   },
 };
 
@@ -1405,6 +1661,9 @@ const PlayerController = {
     PlayerEntity.y = ny;
     PlayerEntity.walkFrame = 1 - PlayerEntity.walkFrame;
     AudioManager.playStep();
+    if (WorldMap.getTile(PlayerEntity.x, PlayerEntity.y) === T.EXIT) {
+      ZoneController.trigger();
+    }
   },
 
   tryInteract() {
@@ -1452,7 +1711,8 @@ const Renderer = {
 
   drawWorld() {
     const map = WorldMap.currentMap();
-    ctx.fillStyle = '#070b10';
+    const pal = ZONE_PALETTES[PlayerEntity.zone] || ZONE_PALETTES[0];
+    ctx.fillStyle = pal.bg;
     ctx.fillRect(0, 0, 640, 480);
 
     for (let row = 0; row < map.length; row++) {
@@ -1473,12 +1733,13 @@ const Renderer = {
     if (adj) this._drawTriggerHighlight(adj.x, adj.y);
 
     this._drawPlayer();
+    this._drawZoneEffect();
 
     // Zone HUD
     ctx.fillStyle = 'rgba(74,234,220,0.4)';
     ctx.font = '10px "Exo 2", monospace';
     ctx.textAlign = 'left';
-    ctx.fillText('ZONE I  —  THE CROSSROADS', 8, 14);
+    ctx.fillText(ZONE_NAMES[PlayerEntity.zone] || ZONE_NAMES[0], 8, 14);
 
     // Encounter progress
     const done = ScoringState.completedEncounters.size;
@@ -1490,14 +1751,15 @@ const Renderer = {
   },
 
   _drawTile(tile, px, py, col, row) {
+    const pal = ZONE_PALETTES[PlayerEntity.zone] || ZONE_PALETTES[0];
     if (tile === T.WALL) {
-      ctx.fillStyle = '#1c2a3a';
+      ctx.fillStyle = pal.wall;
       ctx.fillRect(px, py, TILE, TILE);
-      ctx.fillStyle = '#263848';
+      ctx.fillStyle = pal.wallTop;
       ctx.fillRect(px, py, TILE, 3);
-      ctx.fillStyle = '#121e2c';
+      ctx.fillStyle = pal.wallBot;
       ctx.fillRect(px, py + TILE - 3, TILE, 3);
-      ctx.fillStyle = '#101820';
+      ctx.fillStyle = pal.mortar;
       if (row % 2 === 0) {
         ctx.fillRect(px + 2, py + 10, TILE - 4, 1);
         ctx.fillRect(px + 2, py + 21, TILE - 4, 1);
@@ -1506,9 +1768,9 @@ const Renderer = {
         ctx.fillRect(px + 2, py + 26, TILE - 4, 1);
       }
     } else {
-      ctx.fillStyle = '#0c1822';
+      ctx.fillStyle = pal.floor;
       ctx.fillRect(px, py, TILE, TILE);
-      ctx.fillStyle = '#081016';
+      ctx.fillStyle = pal.mortar;
       ctx.fillRect(px, py, TILE, 1);
       ctx.fillRect(px, py, 1, TILE);
     }
@@ -1546,27 +1808,33 @@ const Renderer = {
   },
 
   _drawTriggerHighlight(tx, ty) {
-    // Don't highlight completed NPCs
     const localIdx = (ZONE_NPCS[PlayerEntity.zone] || [])
       .findIndex(n => n.x === tx && n.y === ty);
     const globalIdx = PlayerEntity.zone * 4 + localIdx;
-    if (ScoringState.completedEncounters.has(globalIdx)) return;
+    const done = ScoringState.completedEncounters.has(globalIdx);
 
     const t     = performance.now() / 1000;
     const pulse = 0.25 + 0.2 * Math.sin(t * 4);
 
-    ctx.strokeStyle = `rgba(74,234,220,${pulse + 0.15})`;
-    ctx.lineWidth   = 2;
+    if (done) {
+      // Dim border to indicate re-talk is available
+      ctx.strokeStyle = `rgba(74,234,220,${pulse * 0.3})`;
+    } else {
+      ctx.strokeStyle = `rgba(74,234,220,${pulse + 0.15})`;
+    }
+    ctx.lineWidth = 2;
     ctx.strokeRect(tx * TILE + 1, ty * TILE + 1, TILE - 2, TILE - 2);
-    ctx.lineWidth   = 1;
+    ctx.lineWidth = 1;
 
-    const ppx = PlayerEntity.x * TILE + TILE / 2;
-    const ppy = PlayerEntity.y * TILE;
-    ctx.fillStyle  = `rgba(74,234,220,${0.65 + 0.35 * Math.sin(t * 5)})`;
-    ctx.font       = 'bold 11px "Exo 2", monospace';
-    ctx.textAlign  = 'center';
-    ctx.fillText('!', ppx, ppy - 2);
-    ctx.textAlign  = 'left';
+    if (!done) {
+      const ppx = PlayerEntity.x * TILE + TILE / 2;
+      const ppy = PlayerEntity.y * TILE;
+      ctx.fillStyle  = `rgba(74,234,220,${0.65 + 0.35 * Math.sin(t * 5)})`;
+      ctx.font       = 'bold 11px "Exo 2", monospace';
+      ctx.textAlign  = 'center';
+      ctx.fillText('!', ppx, ppy - 2);
+      ctx.textAlign  = 'left';
+    }
   },
 
   _drawPlayer() {
@@ -1632,6 +1900,50 @@ const Renderer = {
   },
 };
 
+  _drawZoneEffect() {
+    const z = PlayerEntity.zone;
+    const t = performance.now() / 1000;
+    if (z === 1) {
+      // Mire: drifting fog patches
+      for (let i = 0; i < 8; i++) {
+        const fx = (Math.sin(t * 0.18 + i * 1.7) * 0.5 + 0.5) * 640;
+        const fy = (Math.cos(t * 0.12 + i * 2.3) * 0.5 + 0.5) * 480;
+        const grd = ctx.createRadialGradient(fx, fy, 10, fx, fy, 140);
+        grd.addColorStop(0, 'rgba(140,210,170,0.12)');
+        grd.addColorStop(1, 'rgba(0,0,0,0)');
+        ctx.fillStyle = grd;
+        ctx.fillRect(0, 0, 640, 480);
+      }
+    } else if (z === 5) {
+      // Dark: darkness vignette with limited visibility radius around player
+      const px = PlayerEntity.x * TILE + TILE / 2;
+      const py = PlayerEntity.y * TILE + TILE / 2;
+      const grd = ctx.createRadialGradient(px, py, TILE * 2, px, py, TILE * 5.5);
+      grd.addColorStop(0, 'rgba(0,0,0,0)');
+      grd.addColorStop(1, 'rgba(0,0,0,0.94)');
+      ctx.fillStyle = grd;
+      ctx.fillRect(0, 0, 640, 480);
+    }
+  },
+
+  drawResults() {
+    const t = performance.now() / 1000;
+    ctx.fillStyle = '#0a0a0f';
+    ctx.fillRect(0, 0, 640, 480);
+    ctx.fillStyle = `rgba(74,234,220,${0.7 + 0.3 * Math.sin(t * 1.5)})`;
+    ctx.font = 'bold 22px "Exo 2", monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('YOUR CHARACTER SHEET', 320, 180);
+    ctx.font = '13px "DM Sans", sans-serif';
+    ctx.fillStyle = '#8aa0b0';
+    ctx.fillText('Results screen arrives in Phase 6.', 320, 220);
+    ctx.font = '11px "Exo 2", monospace';
+    ctx.fillStyle = 'rgba(74,234,220,0.35)';
+    ctx.fillText('PHASE 6 PLACEHOLDER', 320, 260);
+    ctx.textAlign = 'left';
+  },
+};
+
 // ============================================================
 // AUDIO MANAGER (all no-ops until Phase 8)
 // ============================================================
@@ -1653,9 +1965,12 @@ function gameLoop(timestamp) {
 
   if (GameStateMachine.state === STATES.TITLE) {
     Renderer.drawTitleArt();
-  } else if (GameStateMachine.state === STATES.PLAYING ||
-             GameStateMachine.state === STATES.ENCOUNTER) {
+  } else if (GameStateMachine.state === STATES.PLAYING  ||
+             GameStateMachine.state === STATES.ENCOUNTER ||
+             GameStateMachine.state === STATES.ZONE_TRANSITION) {
     Renderer.drawWorld();
+  } else if (GameStateMachine.state === STATES.RESULTS) {
+    Renderer.drawResults();
   }
 
   requestAnimationFrame(gameLoop);
@@ -1676,10 +1991,13 @@ document.addEventListener('keydown', (e) => {
   }
 
   if (state === STATES.ENCOUNTER) {
-    const keyMap = { '1': 0, '2': 1, '3': 2, '4': 3 };
-    if (e.key in keyMap) {
-      e.preventDefault();
-      EncounterController.selectOption(keyMap[e.key]);
+    e.preventDefault();
+    if (EncounterController.phase === 'options') {
+      if (e.key === 'ArrowUp'   || e.key === 'w' || e.key === 'W') EncounterController.moveSelection(-1);
+      if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') EncounterController.moveSelection(1);
+      if (e.key === ' ' || e.key === 'Enter') EncounterController.selectOption();
+    } else if (EncounterController.phase === 'reaction') {
+      if (e.key === ' ' || e.key === 'Enter') EncounterController.advanceReaction();
     }
     return;
   }

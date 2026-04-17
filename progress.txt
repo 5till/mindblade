@@ -65,4 +65,37 @@ YAKI-IRE PROGRESS LOG
 - buildSaveState() consolidates player + scoring state for PersistenceManager
 - confirmCharacter() and continueSave() reset/restore ScoringState correctly
 
-NEXT TASK: Phase 4 — All 7 Zones + Zone Transitions (GitHub issue #5)
+
+[Phase 4 — All 7 Zones + Zone Transitions] COMPLETE
+- Added ZONE2_MAP through ZONE7_MAP (The Mire, Tower, Cave, Arena, Dark, Summit)
+  each with 4 NPC trigger positions and distinct wall/floor layouts
+- Added EXIT tiles (T.EXIT=3) at bottom of zones 0-5 (cols 9-10, row 14);
+  zone 6 (Summit) is the final zone with no exit
+- ZoneController: triggers on EXIT tile step, fades, increments zone, places
+  player at (9,1) in new zone, saves state; blocks double-transitions
+- ZONE_PALETTES[7]: per-zone color data (bg, floor, wall, mortar variants)
+- ZONE_NAMES[7]: dynamic HUD label ("ZONE II — THE MIRE" etc.)
+- ZONE_NPCS expanded to all 7 zones; ContentDatabase.npcPositions updated
+- WorldMap.maps now holds all 7 zone arrays
+- Renderer._drawTile uses ZONE_PALETTES[PlayerEntity.zone] instead of hardcoded colors
+- Renderer.drawWorld: zone bg color + ZONE_NAMES[zone] HUD + _drawZoneEffect() call
+- Renderer._drawZoneEffect(): fog particles (zone 1), darkness vignette (zone 5)
+- Renderer.drawResults(): stub canvas screen (placeholder for Phase 6)
+- EncounterController: Oracle (encounter 27) triggers RESULTS state after reaction
+- GameStateMachine: ZONE_TRANSITION + RESULTS states handled in onEnter
+- gameLoop renders drawWorld during ZONE_TRANSITION; drawResults during RESULTS
+
+[Phase 3 spec corrections — encounter navigation and re-talk]
+- Replaced number key (1-4) selection with arrow key navigation + Space/Enter confirm
+- Removed 2.2s auto-close timer; reaction text now stays until player dismisses with
+  Space/Enter (supporting multi-page reactions: each press advances, last press closes)
+- Re-talking to a completed NPC now reopens the encounter: ScoringState.revert()
+  subtracts the previous score delta and removes from completedEncounters before
+  re-presenting options; on re-selection the new scores replace the old ones
+- ScoringState.lastChoices{} tracks the scores object of each completed encounter for
+  accurate revert; persisted across save/resume
+- _drawTriggerHighlight now shows a dim border for completed NPCs (re-talk available)
+  instead of hiding the highlight entirely
+- Initial option 0 is pre-highlighted when encounter opens
+
+NEXT TASK: Phase 4b — Full Playthrough Review [HITL] (GitHub issue #6)
