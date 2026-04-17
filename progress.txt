@@ -39,4 +39,30 @@ YAKI-IRE PROGRESS LOG
 - Player start: (9,7) center of map; position saved/restored via PersistenceManager
 - Input disabled outside PLAYING state
 
-NEXT TASK: Phase 3 — Encounter System + Scoring Engine + Content Database (GitHub issue #4)
+
+[Phase 3 — Encounter System + Scoring Engine + Content Database] COMPLETE
+- ContentDatabase: all 28 encounter definitions across 7 zones, each with npcName,
+  dialogue, 4 options (text + score deltas on 2 dimensions each), and reactions;
+  npcPositions[zoneIdx] maps local NPC index to {x,y} matching ZONE_NPCS
+- ScoringEngine: pure functions — normalize() maps rawScores to ranks 1-7 using
+  formula round((raw/max)*6)+1 clamped [1,7]; overallRank() returns rounded average;
+  maxPossibleScores constants for all 7 dimensions (ag:36, cl:34, di:28, va:27, vl:32,
+  se:32, po:32); RANK_LABELS and DIM_NAMES lookup tables
+- ScoringState: mutable runtime state (rawScores, completedEncounters Set,
+  optionOrders map); fromSave/toSave for persistence; accumulate() adds score deltas
+- EncounterController: start(npcX,npcY) looks up global encounter index (zone*4+local),
+  guards against re-triggering completed encounters, generates seeded option shuffle,
+  transitions to ENCOUNTER state; selectOption(displayIdx) accumulates scores, saves
+  state, triggers reaction phase with 2.2s auto-close; _renderOptions/_renderReaction
+  update DOM dialogue box
+- seededShuffle(): Fisher-Yates with mulberry32 seeded RNG for reproducible per-session
+  option order stored in ScoringState.optionOrders
+- Dialogue box UI: HTML/CSS overlay anchored to bottom of game canvas; shows NPC name,
+  dialogue text, 4 randomized options (press 1-4), then reaction text; completed NPCs
+  dimmed in world renderer; encounter progress counter in HUD (done/28)
+- InputController: ENCOUNTER state handles keys 1-4 for option selection
+- Zone 1's 4 NPCs fully wired to encounters 0-3; score logged to console after each
+- buildSaveState() consolidates player + scoring state for PersistenceManager
+- confirmCharacter() and continueSave() reset/restore ScoringState correctly
+
+NEXT TASK: Phase 4 — All 7 Zones + Zone Transitions (GitHub issue #5)

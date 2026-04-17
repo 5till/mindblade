@@ -41,6 +41,7 @@
 
   .overlay.active { display: flex; }
 
+  /* ===== TITLE SCREEN ===== */
   #title-overlay {
     flex-direction: column;
     align-items: center;
@@ -115,6 +116,7 @@
     50% { opacity: 0; }
   }
 
+  /* ===== CHARACTER CREATION ===== */
   #char-create-overlay {
     flex-direction: column;
     align-items: center;
@@ -245,6 +247,7 @@
   .corner-bl { bottom: 3px; left: 3px; }
   .corner-br { bottom: 3px; right: 3px; }
 
+  /* ===== FADE OVERLAY ===== */
   #fade-overlay {
     position: absolute;
     top: 0; left: 0;
@@ -257,6 +260,100 @@
   }
 
   #fade-overlay.fade-in { opacity: 1; pointer-events: all; }
+
+  /* ===== ENCOUNTER DIALOGUE BOX ===== */
+  #encounter-overlay {
+    align-items: flex-end;
+    background: transparent;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  #encounter-overlay.active { pointer-events: all; }
+
+  .dialogue-box {
+    width: 100%;
+    background: rgba(5, 9, 16, 0.97);
+    border-top: 2px solid rgba(74,234,220,0.55);
+    padding: 12px 16px 14px;
+    min-height: 148px;
+  }
+
+  .dlg-npc-name {
+    font-family: 'Exo 2', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    color: #4aeadc;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    opacity: 0.8;
+  }
+
+  .dlg-text {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: #c8d8e8;
+    line-height: 1.55;
+    margin-bottom: 10px;
+  }
+
+  .dlg-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+  }
+
+  .dlg-option {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11.5px;
+    color: #7a90a4;
+    padding: 5px 7px 5px 5px;
+    border: 1px solid #141e2a;
+    background: rgba(8,14,24,0.7);
+    display: flex;
+    align-items: flex-start;
+    gap: 5px;
+    transition: border-color 0.1s, color 0.1s, background 0.1s;
+    line-height: 1.4;
+  }
+
+  .dlg-option.highlighted {
+    border-color: rgba(74,234,220,0.45);
+    color: #e0e8ef;
+    background: rgba(74,234,220,0.06);
+  }
+
+  .opt-num {
+    font-family: 'Exo 2', sans-serif;
+    font-size: 9px;
+    font-weight: 700;
+    color: rgba(74,234,220,0.55);
+    min-width: 11px;
+    padding-top: 2px;
+    flex-shrink: 0;
+  }
+
+  .dlg-option.highlighted .opt-num { color: #4aeadc; }
+
+  .dlg-reaction {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-style: italic;
+    color: #7a90a4;
+    line-height: 1.5;
+    padding: 2px 0;
+  }
+
+  .dlg-prompt {
+    font-family: 'Exo 2', sans-serif;
+    font-size: 9px;
+    color: rgba(74,234,220,0.3);
+    letter-spacing: 2px;
+    text-align: right;
+    margin-top: 5px;
+    text-transform: uppercase;
+  }
 </style>
 </head>
 <body>
@@ -306,6 +403,16 @@
       <button class="confirm-btn" id="confirm-btn" onclick="confirmCharacter()" disabled>
         BEGIN THE QUEST
       </button>
+    </div>
+  </div>
+
+  <div id="encounter-overlay" class="overlay">
+    <div class="dialogue-box">
+      <div class="dlg-npc-name" id="dlg-npc-name"></div>
+      <div class="dlg-text" id="dlg-text"></div>
+      <div class="dlg-options" id="dlg-options"></div>
+      <div class="dlg-reaction" id="dlg-reaction" style="display:none"></div>
+      <div class="dlg-prompt" id="dlg-prompt">PRESS 1 – 4 TO RESPOND</div>
     </div>
   </div>
 
@@ -368,6 +475,690 @@ const ZONE_NPCS = [
 ];
 
 // ============================================================
+// CONTENT DATABASE — 28 encounters across 7 zones
+// ============================================================
+// Score keys: ag=Agency, cl=Clarity, di=Discernment,
+//             va=Validation, vl=Value, se=Security, po=Power
+// npcPositions[zoneIdx] maps local NPC index → {x,y} matching ZONE_NPCS order
+const ContentDatabase = {
+  npcPositions: [
+    [ {x:6,y:3}, {x:13,y:3}, {x:6,y:11}, {x:13,y:11} ], // zone 0
+  ],
+
+  encounters: [
+    // ── ZONE 0: THE CROSSROADS (encounters 0-3) ──
+    {
+      zone: 0,
+      npcName: 'Crossroads Stranger',
+      dialogue: "Another traveler at the crossroads. Tell me — what brought you here?",
+      options: [
+        { text: "I chose this path. Where it leads, I'll find out.",       scores: {ag:4, cl:3} },
+        { text: "I'm searching for something, though I can't name it yet.", scores: {ag:2, cl:2} },
+        { text: "I'm following where the road leads me.",                   scores: {ag:1, cl:2} },
+        { text: "Circumstances brought me. As they always do.",             scores: {ag:1, cl:1} },
+      ],
+      reactions: [
+        "A rare traveler who knows their own compass.",
+        "The unnamed yearning. Dangerous company.",
+        "The road chooses well, then.",
+        "Circumstances are a common travelling companion.",
+      ],
+    },
+    {
+      zone: 0,
+      npcName: 'Weathered Elder',
+      dialogue: "I've seen a hundred like you pass through. Most turn back within a day. What makes you think you'll be different?",
+      options: [
+        { text: "Maybe I won't be. That's not really my concern.",   scores: {va:4, vl:4} },
+        { text: "I don't know if I will be. I'm going anyway.",      scores: {va:4, vl:3} },
+        { text: "I've prepared more than most.",                     scores: {va:3, vl:2} },
+        { text: "I need to prove to myself — and others — that I can.", scores: {va:1, vl:1} },
+      ],
+      reactions: [
+        "Now that's an interesting answer.",
+        "Honest. That's rarer than courage.",
+        "Preparation is a good shield. For a while.",
+        "Proof-seekers rarely find what they're looking for.",
+      ],
+    },
+    {
+      zone: 0,
+      npcName: 'Trail Warden',
+      dialogue: "The eastern path is dangerous. Unknown. I've mapped the western route — safer, slower. Where do you go?",
+      options: [
+        { text: "East. I've weighed it.",                                 scores: {ag:4, se:4} },
+        { text: "Can you tell me more about what's east?",               scores: {ag:3, se:3} },
+        { text: "West. I'd rather arrive slowly than not at all.",       scores: {ag:2, se:1} },
+        { text: "Which way do most travelers go?",                       scores: {ag:1, se:1} },
+      ],
+      reactions: [
+        "Decided. I hope the weight was accurate.",
+        "A measured traveler. East holds challenges, not just dangers.",
+        "Caution has kept many alive.",
+        "Most go west. Decide for yourself what that means.",
+      ],
+    },
+    {
+      zone: 0,
+      npcName: 'Hooded Merchant',
+      dialogue: "A merchant in the village is selling maps to a hidden valley. Five others bought them yesterday. I heard the merchant laughing after they left.",
+      options: [
+        { text: "I'll pass. Something feels off.",                              scores: {di:4, cl:4} },
+        { text: "I'll ask the merchant directly about the valley's conditions.", scores: {di:3, cl:3} },
+        { text: "Five buyers does suggest real demand.",                        scores: {di:2, cl:2} },
+        { text: "Maybe they laughed with relief at good business.",             scores: {di:1, cl:1} },
+      ],
+      reactions: [
+        "Sharp instincts. The maps lead nowhere real.",
+        "Direct questions sometimes reveal more than answers.",
+        "Demand can be manufactured. Keep that in mind.",
+        "That's possible. It's also what he wants you to think.",
+      ],
+    },
+
+    // ── ZONE 1: THE MIRE (encounters 4-7) ──
+    {
+      zone: 1,
+      npcName: 'Marsh Hermit',
+      dialogue: "Two men argued over water rights at sunrise. By noon, one lay injured and the other fled. The marsh judge blames the injured man. Something is wrong with this picture.",
+      options: [
+        { text: "There must be a history between them I'm not seeing.",  scores: {di:4, cl:3} },
+        { text: "Whoever fled had reason to flee.",                      scores: {di:3, cl:2} },
+        { text: "The fleeing man is clearly at fault.",                  scores: {di:2, cl:2} },
+        { text: "The judge knows more than I do. I'll trust his ruling.", scores: {di:1, cl:1} },
+      ],
+      reactions: [
+        "There is. Twelve years of it. You're paying attention.",
+        "Partial credit. Fleeing is a symptom, not a cause.",
+        "Simple thinking for a complex marsh.",
+        "The judge's cousin owns the upstream wells.",
+      ],
+    },
+    {
+      zone: 1,
+      npcName: 'Marsh Patrol',
+      dialogue: "Three merchants refuse to follow the new patrol routes. They say the routes are unnecessary. You've been appointed to resolve it. What do you do?",
+      options: [
+        { text: "I'll explain the routes and genuinely hear their concerns.", scores: {po:4, va:3} },
+        { text: "If three merchants object, maybe the routes are wrong.",     scores: {po:3, va:2} },
+        { text: "I'll enforce the routes. Authority must hold.",              scores: {po:2, va:1} },
+        { text: "I'll poll the other merchants to find consensus.",           scores: {po:1, va:2} },
+      ],
+      reactions: [
+        "They'll comply. Understanding replaces resistance.",
+        "Unusual. Considering whether you're wrong is rare in this position.",
+        "They'll comply. Until they find a better option.",
+        "You'll lose the room to a consensus that was never yours to take.",
+      ],
+    },
+    {
+      zone: 1,
+      npcName: 'Fog-Walker',
+      dialogue: "The fog here is disorienting — I've seen travelers stand in place for hours, waiting for it to clear. It rarely does.",
+      options: [
+        { text: "I'll mark my path as I go and keep moving.",              scores: {ag:4, se:4} },
+        { text: "I'll ask someone who knows these marshes to guide me.",   scores: {ag:3, se:3} },
+        { text: "I don't know what to do. I'll figure it out.",           scores: {ag:2, se:1} },
+        { text: "I'll wait for better visibility. No sense rushing.",     scores: {ag:1, se:2} },
+      ],
+      reactions: [
+        "Smart. Movement with intention beats stillness in the mire.",
+        "Also smart. Knowing when to use others' expertise is its own strength.",
+        "The fog is patient.",
+        "Hours become days in fog that doesn't lift.",
+      ],
+    },
+    {
+      zone: 1,
+      npcName: 'Fellow Traveler',
+      dialogue: "A great warrior came through yesterday. Everyone compared their journeys to his. Even the ones with remarkable achievements seemed diminished by the comparison.",
+      options: [
+        { text: "I'd have been curious about him, but my path is my own.",         scores: {vl:4, po:4} },
+        { text: "Their achievements don't change based on who else passed through.", scores: {vl:4, po:3} },
+        { text: "Remarkable people make others feel small. That's just how it works.", scores: {vl:2, po:2} },
+        { text: "I would've felt the same. Comparison is hard to resist.",          scores: {vl:1, po:1} },
+      ],
+      reactions: [
+        "That's the answer. I wish I'd had it yesterday.",
+        "Exactly right. Though few believe it without practice.",
+        "Is it? Or is that what remarkable people tell themselves?",
+        "Honest, at least. Hard to build on sand.",
+      ],
+    },
+
+    // ── ZONE 2: THE TOWER (encounters 8-11) ──
+    {
+      zone: 2,
+      npcName: 'Tower Scribe',
+      dialogue: "The commander sent word that 'the situation is under control.' But three independent scouts reported signs of unrest this morning. Who do you believe?",
+      options: [
+        { text: "Three independent scouts with nothing to gain — I act on their reports.", scores: {cl:4, ag:4} },
+        { text: "I'll gather more information before deciding.",                           scores: {cl:3, ag:3} },
+        { text: "There's probably a reason for the discrepancy. It'll resolve itself.",   scores: {cl:2, ag:1} },
+        { text: "The commander has broader context. I'll believe him.",                   scores: {cl:1, ag:1} },
+      ],
+      reactions: [
+        "Correct. The commander's message arrived before the scouts returned.",
+        "Reasonable. Though sometimes delay is its own decision.",
+        "Discrepancies rarely resolve themselves. They escalate.",
+        "Authority doesn't change facts on the ground.",
+      ],
+    },
+    {
+      zone: 2,
+      npcName: 'Tower Advisor',
+      dialogue: "A respected elder gave you advice yesterday that felt wrong. You acted on it. It turned out to be a mistake. Now the elder insists you simply didn't execute it properly.",
+      options: [
+        { text: "The advice was flawed. I can learn without agreeing it was my fault.", scores: {va:4, di:4} },
+        { text: "I'll review my execution carefully before drawing conclusions.",        scores: {va:2, di:3} },
+        { text: "I'll defer to their read — the friction isn't worth it.",              scores: {va:1, di:2} },
+        { text: "They know better than I do. I probably executed it wrong.",            scores: {va:1, di:1} },
+      ],
+      reactions: [
+        "Owning outcomes without owning blame that isn't yours. Rare skill.",
+        "Thorough. Just don't let the review become doubt.",
+        "Friction avoided today compounds tomorrow.",
+        "That's what they're counting on.",
+      ],
+    },
+    {
+      zone: 2,
+      npcName: 'Tower Guard',
+      dialogue: "Resources in the tower are running low. Some guards are hoarding supplies out of fear of the shortage. You've been watching this spread.",
+      options: [
+        { text: "I'll share what I have — scarcity thinking makes things worse.",  scores: {se:3, vl:4} },
+        { text: "I'll plan for the mission that makes the most of what we have.",  scores: {se:4, vl:3} },
+        { text: "I'll wait to see how others handle it before deciding.",          scores: {se:2, vl:2} },
+        { text: "I'll secure my own share first.",                                 scores: {se:1, vl:1} },
+      ],
+      reactions: [
+        "Generosity under pressure. It does change the climate.",
+        "Mission clarity in constraint. That's how you maintain trust.",
+        "The waiting spreads the fear.",
+        "Fear is contagious. Now three others are hoarding.",
+      ],
+    },
+    {
+      zone: 2,
+      npcName: 'Tower Captain',
+      dialogue: "A junior guard publicly challenged your decision in front of the whole unit. The decision was correct. How do you respond?",
+      options: [
+        { text: "I speak to them privately, listen first, then clarify.",              scores: {po:4, cl:3} },
+        { text: "I explain my reasoning to the group to reinforce the decision.",     scores: {po:3, cl:4} },
+        { text: "I let it pass — picking fights with subordinates rarely helps.",     scores: {po:2, cl:1} },
+        { text: "I reprimand them publicly — authority must be visible.",             scores: {po:1, cl:2} },
+      ],
+      reactions: [
+        "Best. Private correction preserves dignity and solves the pattern.",
+        "Good. Transparent reasoning builds voluntary compliance.",
+        "The pattern continues. Next challenge comes faster.",
+        "Fear-based authority has a short shelf life.",
+      ],
+    },
+
+    // ── ZONE 3: THE CAVE (encounters 12-15) ──
+    {
+      zone: 3,
+      npcName: 'Cave Dweller',
+      dialogue: "A project you led failed publicly. Everyone can see the outcome. Some are distancing themselves from association with you.",
+      options: [
+        { text: "I'll understand what I can improve, then move to the next thing.", scores: {ag:4, vl:4} },
+        { text: "Failure is just data. I'll use it.",                              scores: {ag:3, vl:3} },
+        { text: "Public failure is different — I need to address the optics first.", scores: {ag:2, vl:2} },
+        { text: "I need to rebuild my reputation before I can move forward.",      scores: {ag:1, vl:1} },
+      ],
+      reactions: [
+        "Clean process. That's how you get better without getting smaller.",
+        "Data is good. Don't skip the reflection before the data.",
+        "Optics first is another word for what others think first.",
+        "Reputation rebuilt by reputation-seeking is fragile.",
+      ],
+    },
+    {
+      zone: 3,
+      npcName: 'Glowing Crystal',
+      dialogue: "A new advisor arrives with high recommendations. In the first meeting, their advice is excellent. In the second, they subtly position themselves as indispensable. What do you notice?",
+      options: [
+        { text: "The shift between meetings is a pattern worth naming early.",       scores: {di:4, se:4} },
+        { text: "I'll watch another few meetings before deciding.",                  scores: {di:3, se:3} },
+        { text: "Excellent advice is excellent advice. I'll focus on outcomes.",    scores: {di:1, se:2} },
+        { text: "Creating indispensability is just smart self-management.",         scores: {di:1, se:1} },
+      ],
+      reactions: [
+        "Early pattern recognition. Rare and valuable.",
+        "Observation without action is still useful. For a time.",
+        "Outcomes and dynamics are both real. Ignoring one doesn't protect the other.",
+        "Until the indispensability creates leverage against you.",
+      ],
+    },
+    {
+      zone: 3,
+      npcName: 'Shadow Figure',
+      dialogue: "Everyone around you seems to be progressing faster. Their promotions, their recognition, their apparent certainty. You're not sure where you stand.",
+      options: [
+        { text: "What I observe in others is incomplete. I know my own trajectory.", scores: {vl:4, va:4} },
+        { text: "Comparison is natural but not useful. I'll redirect it.",          scores: {vl:3, va:3} },
+        { text: "I'll ask someone I trust for an honest assessment of my standing.", scores: {vl:2, va:3} },
+        { text: "I need to work harder and get visible results.",                   scores: {vl:1, va:1} },
+      ],
+      reactions: [
+        "Grounded. That's the hardest thing to maintain in this cave.",
+        "Redirection is a skill. Keep practicing it.",
+        "External calibration has its place. Just don't make it load-bearing.",
+        "Working for visibility is working for others' clocks.",
+      ],
+    },
+    {
+      zone: 3,
+      npcName: 'Cave Echo',
+      dialogue: "You've been given contradictory instructions from two people who both have authority over you. Each insists they're right. You need to act today.",
+      options: [
+        { text: "I'll surface the contradiction and ask them to resolve it together.", scores: {cl:4, po:4} },
+        { text: "I'll decide based on what's most aligned with the actual goal.",     scores: {cl:3, po:3} },
+        { text: "I'll do what the higher-ranking one said.",                          scores: {cl:2, po:1} },
+        { text: "I'll delay and hope the situation resolves on its own.",             scores: {cl:1, po:1} },
+      ],
+      reactions: [
+        "Naming the contradiction removes your double-bind. Cleanly done.",
+        "Goal-oriented decision-making cuts through hierarchy. Risky, but often right.",
+        "Rank resolves authority disputes. Rarely resolves the actual problem.",
+        "The situation will resolve. You'll just have less say in how.",
+      ],
+    },
+
+    // ── ZONE 4: THE ARENA (encounters 16-19) ──
+    {
+      zone: 4,
+      npcName: 'Arena Keeper',
+      dialogue: "A rumor circulates that the arena's leadership will change. Nobody knows who or when. Everyone is adjusting their behavior based on speculation.",
+      options: [
+        { text: "I'll observe carefully and gather facts before adjusting anything.", scores: {se:3, di:4} },
+        { text: "I'll keep doing excellent work — leadership change rarely punishes that.", scores: {se:4, di:3} },
+        { text: "I'll hold still until things clarify.",                             scores: {se:2, di:2} },
+        { text: "I'll try to identify the new leader and position accordingly.",     scores: {se:1, di:1} },
+      ],
+      reactions: [
+        "Facts first. Observations before adjustments.",
+        "Simple and true. Most people forget it when threatened.",
+        "Stillness has a cost when the ground is shifting.",
+        "Positioning for an unknown future usually optimizes for the wrong one.",
+      ],
+    },
+    {
+      zone: 4,
+      npcName: 'Arena Warrior',
+      dialogue: "A crucial match has gone wrong. Your usual approach isn't working. The crowd is restless. Your team is looking to you.",
+      options: [
+        { text: "I'll change approach mid-match. What's working now takes priority.", scores: {ag:4, po:4} },
+        { text: "I'll call a brief pause to regroup and reassess with the team.",    scores: {ag:3, po:4} },
+        { text: "I'll keep executing the plan — consistency matters under pressure.", scores: {ag:2, po:2} },
+        { text: "I'll wait for an opening and hope the tide turns.",                 scores: {ag:1, po:1} },
+      ],
+      reactions: [
+        "Adaptable leadership. The crowd doesn't know the new plan. They just see you moving.",
+        "Shared re-assessment under pressure. The team responds well.",
+        "Plans are tested here. This one is failing.",
+        "Openings don't come to those who wait in arenas.",
+      ],
+    },
+    {
+      zone: 4,
+      npcName: 'Arena Judge',
+      dialogue: "After a match, a judge pulls you aside with detailed feedback — both criticism and praise. You disagree with the criticism but the praise feels accurate.",
+      options: [
+        { text: "I'll sit with both, test the criticism against what I know, decide what's useful.", scores: {va:4, cl:4} },
+        { text: "I'll ask clarifying questions about the criticism to understand its basis.",        scores: {va:3, cl:3} },
+        { text: "I'll absorb the praise and dismiss the criticism — I know my own performance.",    scores: {va:2, cl:2} },
+        { text: "I'll accept all of it gratefully. Judges have authority.",                         scores: {va:1, cl:1} },
+      ],
+      reactions: [
+        "That's how feedback becomes signal instead of noise.",
+        "Good questions reveal whether criticism has a real foundation.",
+        "Selective processing. The criticism you dismiss may be the most important part.",
+        "Authority doesn't make feedback accurate.",
+      ],
+    },
+    {
+      zone: 4,
+      npcName: 'Arena Veteran',
+      dialogue: "You've just lost a high-stakes match to someone with objectively fewer qualifications. They'll get the recognition. You won't.",
+      options: [
+        { text: "Outcomes don't always reflect quality. I know what this performance was.", scores: {vl:4, se:4} },
+        { text: "I'll accept it and use the experience to prepare for the next match.",    scores: {vl:3, se:3} },
+        { text: "I'll process this privately and not let it affect my public demeanor.",   scores: {vl:2, se:3} },
+        { text: "This is unfair. I need to find a way to change this outcome.",           scores: {vl:1, se:1} },
+      ],
+      reactions: [
+        "That kind of knowing — it's hard to maintain. You have it.",
+        "Clean processing. Self-respect in defeat.",
+        "Contained emotion is useful. Make sure it's actually processed later.",
+        "Chasing unfair outcomes is an infinite game.",
+      ],
+    },
+
+    // ── ZONE 5: THE DARK (encounters 20-23) ──
+    {
+      zone: 5,
+      npcName: 'Voice in the Dark',
+      dialogue: "A colleague consistently takes credit for collaborative work in group settings. Others have noticed. You're in the next meeting where it happens again.",
+      options: [
+        { text: "I'll name my contribution clearly and naturally in the same meeting.", scores: {po:4, ag:4} },
+        { text: "I'll speak to them privately afterward.",                             scores: {po:3, ag:3} },
+        { text: "I'll document my contributions more carefully going forward.",        scores: {po:2, ag:2} },
+        { text: "I'll let it pass again. Confrontation in meetings rarely goes well.", scores: {po:1, ag:1} },
+      ],
+      reactions: [
+        "Clean and non-accusatory. Presence asserts without attacking.",
+        "Private correction can change patterns. It requires courage to initiate.",
+        "Documentation is defensive. Presence is more powerful.",
+        "The pattern strengthens. Your absence from your own story grows.",
+      ],
+    },
+    {
+      zone: 5,
+      npcName: 'Dark Mirror',
+      dialogue: "Someone you admire is lavishing you with praise. It's more than the situation warrants. Something feels off.",
+      options: [
+        { text: "Excessive praise often precedes a request. I'll listen for what comes next.", scores: {di:4, va:4} },
+        { text: "I'll accept the positive words and hold the surplus lightly.",               scores: {di:3, va:3} },
+        { text: "Maybe they're just genuinely impressed. I'll enjoy it.",                    scores: {di:2, va:2} },
+        { text: "I'll receive the praise — maybe I've been undervaluing myself.",            scores: {di:1, va:1} },
+      ],
+      reactions: [
+        "Three sentences later, they asked for the favor.",
+        "Balance. You didn't deflect it, and you weren't captured by it.",
+        "Perhaps. The request still comes.",
+        "The request arrives two sentences later.",
+      ],
+    },
+    {
+      zone: 5,
+      npcName: 'Torch Keeper',
+      dialogue: "You've been working on something for weeks, fully committed. A trusted colleague says, with genuine care, that they think you're working on the wrong thing.",
+      options: [
+        { text: "I'll hear them out fully and then decide what's true.",              scores: {cl:4, vl:4} },
+        { text: "I'll take a day to sit with it before responding.",                 scores: {cl:3, vl:3} },
+        { text: "Their perspective is worth weighing, but I know this project.",     scores: {cl:2, vl:3} },
+        { text: "I'll defend the project — I've invested too much to reconsider.",  scores: {cl:1, vl:1} },
+      ],
+      reactions: [
+        "Real clarity costs something. You paid it.",
+        "Space before response is wisdom. Don't let space become avoidance.",
+        "Self-knowledge has value. Certainty can blind it.",
+        "Sunk costs are ghosts. They don't improve the work.",
+      ],
+    },
+    {
+      zone: 5,
+      npcName: 'Ancient Sentinel',
+      dialogue: "You're about to make a significant decision. You don't have enough information, the stakes are high, and waiting will make things worse.",
+      options: [
+        { text: "I'll make the best decision possible with what I have and own it.",           scores: {se:4, po:4} },
+        { text: "I'll find the one piece of information that would change my decision, get it, then move.", scores: {se:3, po:3} },
+        { text: "I'll ask someone I trust to make the call with me.",                         scores: {se:2, po:2} },
+        { text: "I'll wait. Acting without information is reckless.",                         scores: {se:1, po:1} },
+      ],
+      reactions: [
+        "Deciding under uncertainty with full ownership — that's how things get done.",
+        "Finding the decision-relevant constraint. That's efficient thinking.",
+        "Shared decisions can work. Ensure you're not outsourcing your discomfort.",
+        "Waiting makes things worse. You said so yourself.",
+      ],
+    },
+
+    // ── ZONE 6: THE SUMMIT APPROACH (encounters 24-27) ──
+    {
+      zone: 6,
+      npcName: 'Summit Wind',
+      dialogue: "You're near the top. The path splits — one marked and well-traveled, one unmarked but shorter on the map. You can't be certain what's ahead.",
+      options: [
+        { text: "The unmarked path. I've learned to read terrain by now.",       scores: {ag:4, di:4} },
+        { text: "I'll scout a short distance down the unmarked path, then decide.", scores: {ag:3, di:3} },
+        { text: "The marked path. I'm this close — no point risking it.",        scores: {ag:2, di:2} },
+        { text: "I'll ask the next traveler I see which they took.",             scores: {ag:1, di:1} },
+      ],
+      reactions: [
+        "The map was right — it was faster. And you read the terrain well.",
+        "Scout before commit. You find it's passable and proceed.",
+        "Safety near the end can be its own decision.",
+        "No one comes. You wait.",
+      ],
+    },
+    {
+      zone: 6,
+      npcName: 'Summit Elder',
+      dialogue: "Looking back on the journey, you realize you spent considerable time on things that didn't matter — and nearly skipped things that did. How do you hold this?",
+      options: [
+        { text: "The detours were part of getting here. It's not clean, but it's mine.",   scores: {vl:4, cl:3} },
+        { text: "I couldn't have known then. I know now. That's the process.",             scores: {vl:4, cl:4} },
+        { text: "I'll try to be more discerning going forward.",                          scores: {vl:3, cl:3} },
+        { text: "I wasted time. I should have known better.",                             scores: {vl:1, cl:1} },
+      ],
+      reactions: [
+        "Ownership without self-punishment. A rare relationship with your own history.",
+        "That's not a consolation — it's an accurate description of how humans learn.",
+        "Discernment grows through use. You've used it here.",
+        "Regret as self-punishment doesn't improve the next journey.",
+      ],
+    },
+    {
+      zone: 6,
+      npcName: 'Summit Guardian',
+      dialogue: "You've arrived at the final gate. When you are uncertain, afraid, or challenged — what do you return to?",
+      options: [
+        { text: "What I've learned about myself on paths like this one.",              scores: {po:4, se:4} },
+        { text: "Something steady — though I don't always reach it on the first try.", scores: {po:3, se:4} },
+        { text: "What has worked before.",                                             scores: {po:3, se:3} },
+        { text: "What others expect of me.",                                          scores: {po:1, se:1} },
+      ],
+      reactions: [
+        "Self-knowledge as anchor. The most portable foundation there is.",
+        "Honesty about imperfection, and still reaching for steady ground. That counts.",
+        "Pattern recognition is useful. Just remember conditions change.",
+        "Others' expectations are borrowed ground. Solid until it isn't.",
+      ],
+    },
+    {
+      zone: 6,
+      npcName: 'The Oracle',
+      dialogue: "Before you enter the sanctum — one last question. Who gave you permission to be here?",
+      options: [
+        { text: "No one. I gave myself permission.",                          scores: {va:4, ag:4} },
+        { text: "I'm not sure I had permission. Maybe that's the point.",    scores: {va:3, ag:4} },
+        { text: "The path itself — I followed it and arrived.",              scores: {va:3, ag:3} },
+        { text: "I suppose I just... kept going.",                           scores: {va:2, ag:3} },
+      ],
+      reactions: [
+        "That's the answer. The sanctum opens.",
+        "It is the point. Enter.",
+        "The path allows, but you chose to stay on it.",
+        "Persistence is its own form of self-authorization.",
+      ],
+    },
+  ],
+};
+
+// ============================================================
+// SCORING ENGINE — pure functions only
+// ============================================================
+const ScoringEngine = {
+  // Maximum possible score per dimension (sum of best option score across
+  // all encounters that score that dimension)
+  maxPossibleScores: {
+    ag: 36, // encounters: 0,2,6,8,12,17,20,24,27
+    cl: 34, // encounters: 0,3,4,8,11,15,18,22,25
+    di: 28, // encounters: 3,4,9,13,16,21,24
+    va: 27, // encounters: 1,5,9,14,18,21,27
+    vl: 32, // encounters: 1,7,10,12,14,19,22,25
+    se: 32, // encounters: 2,6,10,13,16,19,23,26
+    po: 32, // encounters: 5,7,11,15,17,20,23,26
+  },
+
+  normalize(rawScores) {
+    const ranks = {};
+    for (const dim of Object.keys(this.maxPossibleScores)) {
+      const raw = rawScores[dim] || 0;
+      const max = this.maxPossibleScores[dim];
+      const rank = Math.round((raw / max) * 6) + 1;
+      ranks[dim] = Math.max(1, Math.min(7, rank));
+    }
+    return ranks;
+  },
+
+  overallRank(ranks) {
+    const vals = Object.values(ranks);
+    const avg = vals.reduce((a, b) => a + b, 0) / vals.length;
+    return Math.max(1, Math.min(7, Math.round(avg)));
+  },
+};
+
+// Rank label tables (rank 1-7 per dimension)
+const RANK_LABELS = {
+  ag: ['Adrift','Reactive','Awakening','Grounded','Intentional','Purposeful','Authored'],
+  cl: ['Fused','Fogged','Filtering','Observant','Accurate','Perceptive','Clear-Eyed'],
+  di: ['Surprised','Noticing','Tracking','Reading','Anticipating','Insightful','Prescient'],
+  va: ['Dependent','Seeking','Calibrating','Steady','Grounded','Self-Directed','Sovereign'],
+  vl: ['Borrowed','Fragile','Conditional','Emerging','Stable','Inherent','Self-Evident'],
+  se: ['Paralyzed','Cautious','Steadying','Adapting','Resilient','Fluid','Unshakeable'],
+  po: ['Reactive','Controlling','Stabilizing','Directing','Commanding','Centered','Generative'],
+};
+
+const DIM_NAMES = {
+  ag: 'Agency', cl: 'Clarity', di: 'Discernment',
+  va: 'Validation', vl: 'Value', se: 'Security', po: 'Power',
+};
+
+// ============================================================
+// SCORING STATE — mutable runtime state (persisted)
+// ============================================================
+const ScoringState = {
+  rawScores: { ag: 0, cl: 0, di: 0, va: 0, vl: 0, se: 0, po: 0 },
+  completedEncounters: new Set(),
+  optionOrders: {},
+
+  reset() {
+    this.rawScores = { ag: 0, cl: 0, di: 0, va: 0, vl: 0, se: 0, po: 0 };
+    this.completedEncounters = new Set();
+    this.optionOrders = {};
+  },
+
+  fromSave(data) {
+    if (!data) return;
+    this.rawScores = data.rawScores
+      ? { ...data.rawScores }
+      : { ag: 0, cl: 0, di: 0, va: 0, vl: 0, se: 0, po: 0 };
+    this.completedEncounters = new Set(data.completedEncounters || []);
+    this.optionOrders = data.optionOrders ? { ...data.optionOrders } : {};
+  },
+
+  toSave() {
+    return {
+      rawScores: { ...this.rawScores },
+      completedEncounters: [...this.completedEncounters],
+      optionOrders: { ...this.optionOrders },
+    };
+  },
+
+  accumulate(scores) {
+    for (const [dim, val] of Object.entries(scores)) {
+      this.rawScores[dim] = (this.rawScores[dim] || 0) + val;
+    }
+  },
+};
+
+// ============================================================
+// ENCOUNTER CONTROLLER
+// ============================================================
+const EncounterController = {
+  encounterIdx: -1,
+  phase: 'idle',       // 'options' | 'reaction' | 'idle'
+  _reactionTimer: null,
+
+  start(npcX, npcY) {
+    const localIdx = (ContentDatabase.npcPositions[PlayerEntity.zone] || [])
+      .findIndex(p => p.x === npcX && p.y === npcY);
+    if (localIdx === -1) return;
+
+    const globalIdx = PlayerEntity.zone * 4 + localIdx;
+    if (globalIdx >= ContentDatabase.encounters.length) return;
+    if (ScoringState.completedEncounters.has(globalIdx)) {
+      // Already completed — brief "already met" acknowledgment could go here
+      return;
+    }
+
+    this.encounterIdx = globalIdx;
+
+    // Ensure option order exists for this encounter
+    if (!ScoringState.optionOrders[globalIdx]) {
+      ScoringState.optionOrders[globalIdx] = seededShuffle([0,1,2,3], globalIdx + Date.now());
+    }
+
+    this.phase = 'options';
+    GameStateMachine.transition(STATES.ENCOUNTER);
+    this._renderOptions();
+    AudioManager.playInteract();
+  },
+
+  selectOption(displayIdx) {
+    if (this.phase !== 'options') return;
+    const enc = ContentDatabase.encounters[this.encounterIdx];
+    const order = ScoringState.optionOrders[this.encounterIdx];
+    const realIdx = order[displayIdx];
+    if (realIdx === undefined) return;
+
+    const opt = enc.options[realIdx];
+    ScoringState.accumulate(opt.scores);
+    ScoringState.completedEncounters.add(this.encounterIdx);
+    PersistenceManager.save(buildSaveState());
+
+    console.log('[Score]', JSON.stringify(ScoringState.rawScores));
+
+    this.phase = 'reaction';
+    this._renderReaction(enc.reactions[realIdx]);
+
+    this._reactionTimer = setTimeout(() => this.close(), 2200);
+  },
+
+  close() {
+    clearTimeout(this._reactionTimer);
+    this.phase = 'idle';
+    document.getElementById('encounter-overlay').classList.remove('active');
+    GameStateMachine.transition(STATES.PLAYING);
+  },
+
+  _renderOptions() {
+    const enc = ContentDatabase.encounters[this.encounterIdx];
+    const order = ScoringState.optionOrders[this.encounterIdx];
+
+    document.getElementById('dlg-npc-name').textContent = enc.npcName;
+    document.getElementById('dlg-text').textContent = enc.dialogue;
+    document.getElementById('dlg-reaction').style.display = 'none';
+    document.getElementById('dlg-prompt').textContent = 'PRESS 1 – 4 TO RESPOND';
+
+    const container = document.getElementById('dlg-options');
+    container.style.display = 'grid';
+    container.innerHTML = '';
+    order.forEach((realIdx, displayIdx) => {
+      const opt = enc.options[realIdx];
+      const el = document.createElement('div');
+      el.className = 'dlg-option';
+      el.innerHTML = `<span class="opt-num">${displayIdx + 1}</span><span>${opt.text}</span>`;
+      container.appendChild(el);
+    });
+
+    document.getElementById('encounter-overlay').classList.add('active');
+  },
+
+  _renderReaction(reactionText) {
+    document.getElementById('dlg-options').style.display = 'none';
+    const reactionEl = document.getElementById('dlg-reaction');
+    reactionEl.style.display = 'block';
+    reactionEl.textContent = reactionText;
+    document.getElementById('dlg-prompt').textContent = '';
+  },
+};
+
+// ============================================================
 // STATES
 // ============================================================
 const STATES = {
@@ -393,12 +1184,29 @@ function mulberry32(seed) {
   };
 }
 
+function seededShuffle(arr, seed) {
+  const out = [...arr];
+  const rng = mulberry32(seed | 0);
+  for (let i = out.length - 1; i > 0; i--) {
+    const j = Math.floor(rng() * (i + 1));
+    [out[i], out[j]] = [out[j], out[i]];
+  }
+  return out;
+}
+
 function darkenHex(hex, factor) {
   const h = hex.replace('#', '');
   const r = Math.min(255, Math.floor(parseInt(h.slice(0,2), 16) * factor));
   const g = Math.min(255, Math.floor(parseInt(h.slice(2,4), 16) * factor));
   const b = Math.min(255, Math.floor(parseInt(h.slice(4,6), 16) * factor));
   return `rgb(${r},${g},${b})`;
+}
+
+function buildSaveState() {
+  return {
+    player: PlayerEntity.toSave(),
+    scoring: ScoringState.toSave(),
+  };
 }
 
 function drawPixelMountains(tctx, baseY, spread, scale) {
@@ -483,11 +1291,15 @@ const GameStateMachine = {
           PlayerEntity._positionSet = true;
         }
         break;
+      case STATES.ENCOUNTER:
+        // encounter-overlay shown by EncounterController
+        break;
     }
   },
 
   startNewGame() {
     PersistenceManager.clear();
+    ScoringState.reset();
     fade(() => this.transition(STATES.CHARACTER_CREATE));
   },
 
@@ -495,6 +1307,7 @@ const GameStateMachine = {
     const saved = PersistenceManager.load();
     if (!saved) return;
     PlayerEntity.fromSave(saved.player);
+    ScoringState.fromSave(saved.scoring);
     fade(() => this.transition(STATES.PLAYING));
   },
 };
@@ -597,8 +1410,7 @@ const PlayerController = {
   tryInteract() {
     const adj = WorldMap.adjacentNPC();
     if (!adj) return;
-    console.log('[PC] Interact with NPC at', adj.x, adj.y, '— encounter fires in Phase 3');
-    // EncounterController.start(adj.x, adj.y) — Phase 3
+    EncounterController.start(adj.x, adj.y);
   },
 };
 
@@ -643,43 +1455,48 @@ const Renderer = {
     ctx.fillStyle = '#070b10';
     ctx.fillRect(0, 0, 640, 480);
 
-    // Tiles
     for (let row = 0; row < map.length; row++) {
       for (let col = 0; col < map[row].length; col++) {
         this._drawTile(map[row][col], col * TILE, row * TILE, col, row);
       }
     }
 
-    // NPCs
     for (const npc of (ZONE_NPCS[PlayerEntity.zone] || [])) {
-      this._drawNPC(npc);
+      // Dim completed NPCs
+      const globalIdx = PlayerEntity.zone * 4 +
+        (ZONE_NPCS[PlayerEntity.zone] || []).indexOf(npc);
+      const done = ScoringState.completedEncounters.has(globalIdx);
+      this._drawNPC(npc, done);
     }
 
-    // Trigger highlight + interact prompt when adjacent
     const adj = WorldMap.adjacentNPC();
     if (adj) this._drawTriggerHighlight(adj.x, adj.y);
 
-    // Player on top
     this._drawPlayer();
 
-    // Zone HUD label
+    // Zone HUD
     ctx.fillStyle = 'rgba(74,234,220,0.4)';
     ctx.font = '10px "Exo 2", monospace';
     ctx.textAlign = 'left';
     ctx.fillText('ZONE I  —  THE CROSSROADS', 8, 14);
+
+    // Encounter progress
+    const done = ScoringState.completedEncounters.size;
+    const total = ContentDatabase.encounters.length;
+    ctx.fillStyle = 'rgba(74,234,220,0.25)';
+    ctx.textAlign = 'right';
+    ctx.fillText(`${done}/${total}`, 632, 14);
+    ctx.textAlign = 'left';
   },
 
   _drawTile(tile, px, py, col, row) {
     if (tile === T.WALL) {
       ctx.fillStyle = '#1c2a3a';
       ctx.fillRect(px, py, TILE, TILE);
-      // Top highlight edge
       ctx.fillStyle = '#263848';
       ctx.fillRect(px, py, TILE, 3);
-      // Bottom shadow edge
       ctx.fillStyle = '#121e2c';
       ctx.fillRect(px, py + TILE - 3, TILE, 3);
-      // Stone mortar detail (alternating rows)
       ctx.fillStyle = '#101820';
       if (row % 2 === 0) {
         ctx.fillRect(px + 2, py + 10, TILE - 4, 1);
@@ -689,45 +1506,39 @@ const Renderer = {
         ctx.fillRect(px + 2, py + 26, TILE - 4, 1);
       }
     } else {
-      // Floor (T.FLOOR, T.NPC, T.EXIT all render as floor)
       ctx.fillStyle = '#0c1822';
       ctx.fillRect(px, py, TILE, TILE);
-      // Subtle grid lines
       ctx.fillStyle = '#081016';
       ctx.fillRect(px, py, TILE, 1);
       ctx.fillRect(px, py, 1, TILE);
     }
   },
 
-  _drawNPC(npc) {
+  _drawNPC(npc, dimmed) {
     const px = npc.x * TILE;
     const py = npc.y * TILE;
     const t  = performance.now() / 1000;
 
-    // Shadow
+    ctx.globalAlpha = dimmed ? 0.35 : 1;
+
     ctx.fillStyle = 'rgba(0,0,0,0.45)';
     ctx.fillRect(px + 9, py + 26, 14, 4);
 
-    // Robe body
     ctx.fillStyle = npc.color;
     ctx.fillRect(px + 10, py + 12, 12, 12);
 
-    // Robe hem (darker)
     ctx.fillStyle = npc.darkColor;
     ctx.fillRect(px + 10, py + 22, 12, 4);
-
-    // Hood outer
-    ctx.fillStyle = npc.darkColor;
     ctx.fillRect(px + 9,  py + 3,  14, 10);
     ctx.fillRect(px + 10, py + 2,  12, 3);
 
-    // Face shadow inside hood
     ctx.fillStyle = '#080d14';
     ctx.fillRect(px + 12, py + 6, 8, 6);
 
-    // Glowing eyes (animated pulse)
-    const pulse = 0.5 + 0.5 * Math.sin(t * 2.5 + npc.x * 0.7);
-    ctx.globalAlpha = 0.45 + 0.55 * pulse;
+    if (!dimmed) {
+      const pulse = 0.5 + 0.5 * Math.sin(t * 2.5 + npc.x * 0.7);
+      ctx.globalAlpha = 0.45 + 0.55 * pulse;
+    }
     ctx.fillStyle = '#4aeadc';
     ctx.fillRect(px + 13, py + 8, 2, 2);
     ctx.fillRect(px + 17, py + 8, 2, 2);
@@ -735,16 +1546,20 @@ const Renderer = {
   },
 
   _drawTriggerHighlight(tx, ty) {
+    // Don't highlight completed NPCs
+    const localIdx = (ZONE_NPCS[PlayerEntity.zone] || [])
+      .findIndex(n => n.x === tx && n.y === ty);
+    const globalIdx = PlayerEntity.zone * 4 + localIdx;
+    if (ScoringState.completedEncounters.has(globalIdx)) return;
+
     const t     = performance.now() / 1000;
     const pulse = 0.25 + 0.2 * Math.sin(t * 4);
 
-    // Pulsing border around NPC
     ctx.strokeStyle = `rgba(74,234,220,${pulse + 0.15})`;
     ctx.lineWidth   = 2;
     ctx.strokeRect(tx * TILE + 1, ty * TILE + 1, TILE - 2, TILE - 2);
     ctx.lineWidth   = 1;
 
-    // "!" above player
     const ppx = PlayerEntity.x * TILE + TILE / 2;
     const ppy = PlayerEntity.y * TILE;
     ctx.fillStyle  = `rgba(74,234,220,${0.65 + 0.35 * Math.sin(t * 5)})`;
@@ -763,57 +1578,46 @@ const Renderer = {
     const facing = PlayerEntity.facing;
     const female = PlayerEntity.gender === 'f';
 
-    // Ground shadow
     ctx.fillStyle = 'rgba(0,0,0,0.4)';
     ctx.fillRect(px + 9, py + 27, 14, 4);
 
-    // Legs with walk animation (alternate y offset)
     const lLegOff = frame === 1 ? -2 : 0;
     const rLegOff = frame === 1 ?  2 : 0;
     ctx.fillStyle = dark;
     ctx.fillRect(px + 10, py + 20 + lLegOff, 5, 9);
     ctx.fillRect(px + 17, py + 20 + rLegOff, 5, 9);
 
-    // Skirt overlay for female variant
     if (female) {
       ctx.fillStyle = darkenHex(color, 0.7);
       ctx.fillRect(px + 9, py + 19, 14, 8);
     }
 
-    // Body
     ctx.fillStyle = color;
     ctx.fillRect(px + 9, py + 11, 14, 10);
 
-    // Pauldrons for male variant
     if (!female) {
       ctx.fillStyle = darkenHex(color, 0.75);
       ctx.fillRect(px + 6,  py + 11, 4, 5);
       ctx.fillRect(px + 22, py + 11, 4, 5);
     }
 
-    // Belt
     ctx.fillStyle = dark;
     ctx.fillRect(px + 9, py + 19, 14, 2);
 
-    // Arms (hide the side arm when facing that direction)
     ctx.fillStyle = color;
     if (facing !== 'right') ctx.fillRect(px + 5,  py + 12, 4, 7);
     if (facing !== 'left')  ctx.fillRect(px + 23, py + 12, 4, 7);
 
-    // Head
     ctx.fillStyle = '#e8b888';
     ctx.fillRect(px + 11, py + 3, 10, 8);
 
-    // Hair
     ctx.fillStyle = female ? '#6a2810' : '#3a1a08';
     ctx.fillRect(px + 11, py + 3, 10, 3);
     if (female) {
-      // Longer side hair
       ctx.fillRect(px + 9,  py + 4, 2, 8);
       ctx.fillRect(px + 21, py + 4, 2, 8);
     }
 
-    // Eyes (direction-aware)
     if (facing !== 'up') {
       ctx.fillStyle = '#221208';
       if (facing === 'left') {
@@ -849,7 +1653,8 @@ function gameLoop(timestamp) {
 
   if (GameStateMachine.state === STATES.TITLE) {
     Renderer.drawTitleArt();
-  } else if (GameStateMachine.state === STATES.PLAYING) {
+  } else if (GameStateMachine.state === STATES.PLAYING ||
+             GameStateMachine.state === STATES.ENCOUNTER) {
     Renderer.drawWorld();
   }
 
@@ -866,6 +1671,15 @@ document.addEventListener('keydown', (e) => {
     if (!['F5','F11','F12'].includes(e.key)) {
       e.preventDefault();
       fade(() => GameStateMachine.transition(STATES.CHARACTER_CREATE));
+    }
+    return;
+  }
+
+  if (state === STATES.ENCOUNTER) {
+    const keyMap = { '1': 0, '2': 1, '3': 2, '4': 3 };
+    if (e.key in keyMap) {
+      e.preventDefault();
+      EncounterController.selectOption(keyMap[e.key]);
     }
     return;
   }
@@ -933,7 +1747,8 @@ function confirmCharacter() {
   PlayerEntity.gender      = selectedGender;
   PlayerEntity.outfitColor = selectedColor;
   PlayerEntity._positionSet = false;
-  PersistenceManager.save({ player: PlayerEntity.toSave() });
+  ScoringState.reset();
+  PersistenceManager.save(buildSaveState());
   fade(() => GameStateMachine.transition(STATES.PLAYING));
 }
 
