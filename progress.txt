@@ -1,0 +1,26 @@
+YAKI-IRE PROGRESS LOG
+=====================
+
+[Setup]
+- PRD written and submitted as GitHub issue #1 (5till/mindblade)
+- 10 GitHub issues created (#2-#11) as vertical slice breakdown
+- Implementation plan written to ./plans/yaki-ire.md
+
+[Phase 1 — HTML Shell + Title Screen + Character Creation] COMPLETE
+- Single HTML file (index.html) created with inline CSS and JS
+- Google Fonts (Exo 2 + DM Sans) loaded via <link>
+- Canvas-based 60fps game loop via requestAnimationFrame
+- All 8 GameStateMachine states defined: TITLE, CHARACTER_CREATE, PLAYING,
+  ENCOUNTER, ZONE_TRANSITION, SUMMIT, RESULTS, POST_RESULTS
+- Title screen: animated starfield/torch background art, "YAKI-IRE" title,
+  subheading describing the term, blinking PRESS ANY KEY prompt
+- Continue hint shown when localStorage save detected
+- Character creation panel: gender (WARRIOR/WANDERER), name text input,
+  8-color outfit color picker with pixel swatches
+- Confirm button disabled until gender + name are both filled
+- Fade transition between all screens
+- Placeholder world canvas screen shown after character creation
+- FORMSPREE_URL and CALENDAR_URL placeholder constants at top of file
+- PersistenceManager, PlayerEntity, AudioManager (no-ops) scaffolded
+
+NEXT TASK: Phase 2 — Player Movement + Zone 1 World (GitHub issue #3)

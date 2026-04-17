@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yaki-ire</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;700;900&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0a0a0f;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    overflow: hidden;
+    font-family: 'DM Sans', sans-serif;
+    color: #e0e8ef;
+  }
+
+  #game-container {
+    position: relative;
+    width: 640px;
+    height: 480px;
+  }
+
+  #game-canvas {
+    display: block;
+    image-rendering: pixelated;
+  }
+
+  /* Overlays */
+  .overlay {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    display: none;
+  }
+
+  .overlay.active { display: flex; }
+
+  /* Title screen overlay */
+  #title-overlay {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #0a0a0f;
+  }
+
+  #title-overlay .title-art {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0; left: 0;
+    pointer-events: none;
+  }
+
+  #title-overlay .title-content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    gap: 0;
+  }
+
+  .game-title {
+    font-family: 'Exo 2', sans-serif;
+    font-size: 72px;
+    font-weight: 900;
+    color: #4aeadc;
+    letter-spacing: 8px;
+    text-transform: uppercase;
+    text-shadow: 0 0 20px rgba(74, 234, 220, 0.5), 0 0 60px rgba(74, 234, 220, 0.2);
+    margin-bottom: 8px;
+  }
+
+  .game-subtitle {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: #8aa0b0;
+    letter-spacing: 2px;
+    text-align: center;
+    max-width: 340px;
+    line-height: 1.6;
+    margin-bottom: 80px;
+  }
+
+  .press-start {
+    font-family: 'Exo 2', sans-serif;
+    font-size: 14px;
+    color: #e0e8ef;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    animation: blink 1.2s step-end infinite;
+  }
+
+  .continue-hint {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    color: #4aeadc;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-top: 12px;
+    cursor: pointer;
+    opacity: 0.8;
+    display: none;
+  }
+
+  .continue-hint:hover { opacity: 1; }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  /* Character creation overlay */
+  #char-create-overlay {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #0a0a0f;
+  }
+
+  .char-create-panel {
+    width: 420px;
+    border: 2px solid #4aeadc;
+    background: rgba(10, 10, 15, 0.95);
+    padding: 32px;
+    position: relative;
+  }
+
+  .char-create-panel::before,
+  .char-create-panel::after {
+    content: '';
+    position: absolute;
+    width: 8px; height: 8px;
+    border: 2px solid #4aeadc;
+  }
+  .char-create-panel::before { top: -2px; left: -2px; border-right: none; border-bottom: none; }
+  .char-create-panel::after  { bottom: -2px; right: -2px; border-left: none; border-top: none; }
+
+  .panel-title {
+    font-family: 'Exo 2', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: #4aeadc;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 28px;
+  }
+
+  .field-group {
+    margin-bottom: 22px;
+  }
+
+  .field-label {
+    font-family: 'Exo 2', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    color: #8aa0b0;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    display: block;
+  }
+
+  /* Gender selection */
+  .gender-options {
+    display: flex;
+    gap: 12px;
+  }
+
+  .gender-btn {
+    flex: 1;
+    padding: 10px;
+    background: transparent;
+    border: 1px solid #2a3a4a;
+    color: #8aa0b0;
+    font-family: 'Exo 2', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .gender-btn:hover {
+    border-color: #4aeadc;
+    color: #e0e8ef;
+  }
+
+  .gender-btn.selected {
+    border-color: #4aeadc;
+    color: #4aeadc;
+    background: rgba(74, 234, 220, 0.08);
+  }
+
+  /* Name input */
+  .name-input {
+    width: 100%;
+    background: transparent;
+    border: 1px solid #2a3a4a;
+    border-bottom: 1px solid #4aeadc;
+    color: #e0e8ef;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    padding: 8px 4px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  .name-input:focus {
+    border-color: #4aeadc;
+    background: rgba(74, 234, 220, 0.04);
+  }
+
+  .name-input::placeholder { color: #3a4a5a; }
+
+  /* Color picker */
+  .color-options {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .color-swatch {
+    width: 32px;
+    height: 32px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: transform 0.1s, border-color 0.1s;
+  }
+
+  .color-swatch:hover { transform: scale(1.15); }
+
+  .color-swatch.selected {
+    border-color: #e0e8ef;
+    transform: scale(1.1);
+    box-shadow: 0 0 8px rgba(224, 232, 239, 0.4);
+  }
+
+  /* Confirm button */
+  .confirm-btn {
+    width: 100%;
+    padding: 12px;
+    background: transparent;
+    border: 1px solid #4aeadc;
+    color: #4aeadc;
+    font-family: 'Exo 2', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.15s;
+    margin-top: 8px;
+  }
+
+  .confirm-btn:hover {
+    background: rgba(74, 234, 220, 0.12);
+    color: #e0e8ef;
+  }
+
+  .confirm-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+
+  /* Pixel border corners on panel */
+  .corner-tl, .corner-tr, .corner-bl, .corner-br {
+    position: absolute;
+    width: 6px; height: 6px;
+    background: #4aeadc;
+  }
+  .corner-tl { top: 3px; left: 3px; }
+  .corner-tr { top: 3px; right: 3px; }
+  .corner-bl { bottom: 3px; left: 3px; }
+  .corner-br { bottom: 3px; right: 3px; }
+
+  /* Fade transition */
+  #fade-overlay {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: #0a0a0f;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 100;
+    transition: opacity 0.4s ease;
+  }
+
+  #fade-overlay.fade-in { opacity: 1; pointer-events: all; }
+</style>
+</head>
+<body>
+
+<div id="game-container">
+  <canvas id="game-canvas" width="640" height="480"></canvas>
+
+  <!-- Title Screen -->
+  <div id="title-overlay" class="overlay active">
+    <canvas id="title-art-canvas" class="title-art" width="640" height="480"></canvas>
+    <div class="title-content">
+      <div class="game-title">YAKI-IRE</div>
+      <div class="game-subtitle">The Japanese art of quenching steel —<br>heat, water, and the blade's true nature revealed.</div>
+      <div class="press-start" id="press-start-text">PRESS ANY KEY</div>
+      <div class="continue-hint" id="continue-hint" onclick="GameStateMachine.continueSave()">▶ CONTINUE QUEST</div>
+    </div>
+  </div>
+
+  <!-- Character Creation -->
+  <div id="char-create-overlay" class="overlay">
+    <div class="char-create-panel">
+      <div class="corner-tl"></div>
+      <div class="corner-tr"></div>
+      <div class="corner-bl"></div>
+      <div class="corner-br"></div>
+
+      <div class="panel-title">Forge Your Character</div>
+
+      <div class="field-group">
+        <span class="field-label">Origin</span>
+        <div class="gender-options">
+          <button class="gender-btn" id="gender-m" onclick="selectGender('m')">
+            <span>⬡</span> WARRIOR
+          </button>
+          <button class="gender-btn" id="gender-f" onclick="selectGender('f')">
+            <span>◈</span> WANDERER
+          </button>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <span class="field-label">Name</span>
+        <input type="text"
+               class="name-input"
+               id="char-name-input"
+               placeholder="Enter your character's name..."
+               maxlength="20"
+               autocomplete="off"
+               oninput="updateConfirmBtn()">
+      </div>
+
+      <div class="field-group">
+        <span class="field-label">Outfit Color</span>
+        <div class="color-options" id="color-options"></div>
+      </div>
+
+      <button class="confirm-btn" id="confirm-btn" onclick="confirmCharacter()" disabled>
+        BEGIN THE QUEST
+      </button>
+    </div>
+  </div>
+
+  <!-- Fade overlay for transitions -->
+  <div id="fade-overlay"></div>
+</div>
+
+<script>
+// ============================================================
+// CONSTANTS — update these before deploying
+// ============================================================
+const FORMSPREE_URL = 'https://formspree.io/f/REPLACE_ME';
+const CALENDAR_URL  = 'https://calendly.com/REPLACE_ME';
+
+// ============================================================
+// OUTFIT COLORS
+// ============================================================
+const OUTFIT_COLORS = [
+  { hex: '#4aeadc', name: 'Cyan'    },
+  { hex: '#e05a5a', name: 'Crimson' },
+  { hex: '#d4a843', name: 'Gold'    },
+  { hex: '#7b68ee', name: 'Violet'  },
+  { hex: '#5aaa5a', name: 'Jade'    },
+  { hex: '#e8a0d0', name: 'Rose'    },
+  { hex: '#ffffff', name: 'Silver'  },
+  { hex: '#f4a460', name: 'Amber'   },
+];
+
+// ============================================================
+// GAME STATE MACHINE
+// ============================================================
+const STATES = {
+  TITLE:           'TITLE',
+  CHARACTER_CREATE: 'CHARACTER_CREATE',
+  PLAYING:          'PLAYING',
+  ENCOUNTER:        'ENCOUNTER',
+  ZONE_TRANSITION:  'ZONE_TRANSITION',
+  SUMMIT:           'SUMMIT',
+  RESULTS:          'RESULTS',
+  POST_RESULTS:     'POST_RESULTS',
+};
+
+const GameStateMachine = {
+  state: STATES.TITLE,
+
+  transition(newState) {
+    console.log(`[GSM] ${this.state} → ${newState}`);
+    this.state = newState;
+    this.onEnter(newState);
+  },
+
+  onEnter(state) {
+    switch (state) {
+      case STATES.TITLE:
+        showOverlay('title-overlay');
+        checkForSave();
+        break;
+      case STATES.CHARACTER_CREATE:
+        showOverlay('char-create-overlay');
+        break;
+      case STATES.PLAYING:
+        hideAllOverlays();
+        Renderer.drawPlaceholderWorld();
+        break;
+    }
+  },
+
+  startNewGame() {
+    PersistenceManager.clear();
+    fade(() => this.transition(STATES.CHARACTER_CREATE));
+  },
+
+  continueSave() {
+    const saved = PersistenceManager.load();
+    if (!saved) return;
+    PlayerEntity.fromSave(saved.player);
+    fade(() => this.transition(STATES.PLAYING));
+  },
+};
+
+// ============================================================
+// PLAYER ENTITY
+// ============================================================
+const PlayerEntity = {
+  name:       '',
+  gender:     'm',
+  outfitColor: OUTFIT_COLORS[0].hex,
+  zone:       0,
+  x:          5,
+  y:          5,
+
+  fromSave(data) {
+    Object.assign(this, data);
+  },
+
+  toSave() {
+    return {
+      name:        this.name,
+      gender:      this.gender,
+      outfitColor: this.outfitColor,
+      zone:        this.zone,
+      x:           this.x,
+      y:           this.y,
+    };
+  },
+};
+
+// ============================================================
+// PERSISTENCE MANAGER
+// ============================================================
+const PersistenceManager = {
+  KEY: 'yakiire_save',
+
+  save(state) {
+    try {
+      localStorage.setItem(this.KEY, JSON.stringify(state));
+    } catch(e) {
+      console.warn('[PM] Save failed:', e);
+    }
+  },
+
+  load() {
+    try {
+      const raw = localStorage.getItem(this.KEY);
+      return raw ? JSON.parse(raw) : null;
+    } catch(e) {
+      return null;
+    }
+  },
+
+  clear() {
+    localStorage.removeItem(this.KEY);
+  },
+
+  exists() {
+    return localStorage.getItem(this.KEY) !== null;
+  },
+};
+
+// ============================================================
+// RENDERER
+// ============================================================
+const canvas = document.getElementById('game-canvas');
+const ctx    = canvas.getContext('2d');
+
+const Renderer = {
+  // Draw the animated title background art
+  drawTitleArt() {
+    const tc = document.getElementById('title-art-canvas');
+    const tctx = tc.getContext('2d');
+    const t = performance.now() / 1000;
+
+    tctx.clearRect(0, 0, 640, 480);
+
+    // Starfield
+    tctx.fillStyle = '#0a0a0f';
+    tctx.fillRect(0, 0, 640, 480);
+
+    // Draw pixel stars
+    const stars = TitleArt.stars;
+    for (let i = 0; i < stars.length; i++) {
+      const s = stars[i];
+      const twinkle = 0.4 + 0.6 * Math.abs(Math.sin(t * s.speed + s.phase));
+      tctx.globalAlpha = twinkle * s.alpha;
+      tctx.fillStyle = s.color;
+      tctx.fillRect(s.x, s.y, s.size, s.size);
+    }
+
+    tctx.globalAlpha = 1;
+
+    // Bottom ground line
+    tctx.fillStyle = '#0d1a20';
+    tctx.fillRect(0, 400, 640, 80);
+
+    // Horizon glow
+    const grd = tctx.createLinearGradient(0, 320, 0, 410);
+    grd.addColorStop(0, 'rgba(74,234,220,0)');
+    grd.addColorStop(1, 'rgba(74,234,220,0.06)');
+    tctx.fillStyle = grd;
+    tctx.fillRect(0, 320, 640, 90);
+
+    // Distant mountains (pixel style)
+    tctx.fillStyle = '#0d1f2a';
+    drawPixelMountains(tctx, 360, 100, 0.8);
+    tctx.fillStyle = '#0a1520';
+    drawPixelMountains(tctx, 340, 140, 1.2);
+
+    // Foreground torches (flicker)
+    drawTorch(tctx, 80,  370, t);
+    drawTorch(tctx, 560, 370, t);
+  },
+
+  drawPlaceholderWorld() {
+    ctx.fillStyle = '#0a0a0f';
+    ctx.fillRect(0, 0, 640, 480);
+
+    ctx.fillStyle = '#1a2a3a';
+    // Draw a simple grid
+    for (let x = 0; x < 640; x += 32) {
+      ctx.fillRect(x, 0, 1, 480);
+    }
+    for (let y = 0; y < 480; y += 32) {
+      ctx.fillRect(0, y, 640, 1);
+    }
+
+    ctx.fillStyle = '#4aeadc';
+    ctx.font = '14px "Exo 2", monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('ZONE 1 — THE CROSSROADS', 320, 240);
+    ctx.fillStyle = '#8aa0b0';
+    ctx.font = '11px "DM Sans", monospace';
+    ctx.fillText('(World loads in Phase 2)', 320, 262);
+    ctx.textAlign = 'left';
+  },
+};
+
+// ============================================================
+// TITLE ART HELPERS
+// ============================================================
+const TitleArt = {
+  stars: (function() {
+    const s = [];
+    const rng = mulberry32(0xdeadbeef);
+    const colors = ['#e0e8ef','#4aeadc','#8aa0b0','#ffffff'];
+    for (let i = 0; i < 120; i++) {
+      s.push({
+        x:     Math.floor(rng() * 640),
+        y:     Math.floor(rng() * 380),
+        size:  rng() < 0.85 ? 1 : 2,
+        alpha: 0.3 + rng() * 0.7,
+        speed: 0.3 + rng() * 0.8,
+        phase: rng() * Math.PI * 2,
+        color: colors[Math.floor(rng() * colors.length)],
+      });
+    }
+    return s;
+  })(),
+};
+
+function mulberry32(seed) {
+  return function() {
+    seed |= 0; seed = seed + 0x6D2B79F5 | 0;
+    let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+
+function drawPixelMountains(tctx, baseY, spread, scale) {
+  const peaks = [80, 200, 330, 450, 580];
+  for (const px of peaks) {
+    const h = (40 + Math.sin(px * 0.02) * 20) * scale;
+    tctx.beginPath();
+    tctx.moveTo(px - spread, baseY);
+    tctx.lineTo(px, baseY - h);
+    tctx.lineTo(px + spread, baseY);
+    tctx.closePath();
+    tctx.fill();
+  }
+}
+
+function drawTorch(tctx, x, y, t) {
+  // Pole
+  tctx.fillStyle = '#4a3020';
+  tctx.fillRect(x - 2, y - 24, 4, 28);
+
+  // Flame (animated)
+  const flicker = Math.sin(t * 8 + x) * 0.3 + 0.7;
+  const flicker2 = Math.sin(t * 11 + x * 0.5) * 0.2 + 0.8;
+
+  tctx.globalAlpha = 0.4 * flicker;
+  tctx.fillStyle = '#ff6020';
+  tctx.fillRect(x - 5, y - 38, 10, 14);
+
+  tctx.globalAlpha = 0.6 * flicker2;
+  tctx.fillStyle = '#ffa040';
+  tctx.fillRect(x - 3, y - 40, 6, 12);
+
+  tctx.globalAlpha = 0.9 * flicker;
+  tctx.fillStyle = '#ffe080';
+  tctx.fillRect(x - 2, y - 36, 4, 8);
+
+  tctx.globalAlpha = 1;
+}
+
+// ============================================================
+// AUDIO MANAGER (all no-ops in Phase 1)
+// ============================================================
+const AudioManager = {
+  playStep()          {},
+  playInteract()      {},
+  playDialogue()      {},
+  playZoneTransition(){},
+  playResultsReveal() {},
+};
+
+// ============================================================
+// GAME LOOP
+// ============================================================
+let lastFrameTime = 0;
+
+function gameLoop(timestamp) {
+  const dt = timestamp - lastFrameTime;
+  lastFrameTime = timestamp;
+
+  if (GameStateMachine.state === STATES.TITLE) {
+    Renderer.drawTitleArt();
+  }
+
+  requestAnimationFrame(gameLoop);
+}
+
+// ============================================================
+// INPUT CONTROLLER
+// ============================================================
+document.addEventListener('keydown', (e) => {
+  const state = GameStateMachine.state;
+
+  if (state === STATES.TITLE) {
+    // Any key advances from title
+    if (!['F5','F11','F12'].includes(e.key)) {
+      e.preventDefault();
+      fade(() => GameStateMachine.transition(STATES.CHARACTER_CREATE));
+    }
+  }
+});
+
+// ============================================================
+// UI HELPERS — Character Creation
+// ============================================================
+let selectedGender = null;
+let selectedColor  = OUTFIT_COLORS[0].hex;
+
+function buildColorSwatches() {
+  const container = document.getElementById('color-options');
+  OUTFIT_COLORS.forEach((c, i) => {
+    const swatch = document.createElement('div');
+    swatch.className = 'color-swatch' + (i === 0 ? ' selected' : '');
+    swatch.style.background = c.hex;
+    swatch.title = c.name;
+    swatch.onclick = () => selectColor(c.hex, swatch);
+    container.appendChild(swatch);
+  });
+}
+
+function selectGender(g) {
+  selectedGender = g;
+  document.getElementById('gender-m').classList.toggle('selected', g === 'm');
+  document.getElementById('gender-f').classList.toggle('selected', g === 'f');
+  updateConfirmBtn();
+}
+
+function selectColor(hex, el) {
+  selectedColor = hex;
+  document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function updateConfirmBtn() {
+  const name = document.getElementById('char-name-input').value.trim();
+  const btn  = document.getElementById('confirm-btn');
+  btn.disabled = !(selectedGender && name.length >= 1);
+}
+
+function confirmCharacter() {
+  const name = document.getElementById('char-name-input').value.trim();
+  if (!selectedGender || !name) return;
+
+  PlayerEntity.name        = name;
+  PlayerEntity.gender      = selectedGender;
+  PlayerEntity.outfitColor = selectedColor;
+
+  PersistenceManager.save({ player: PlayerEntity.toSave() });
+
+  fade(() => GameStateMachine.transition(STATES.PLAYING));
+}
+
+// ============================================================
+// TITLE SCREEN HELPERS
+// ============================================================
+function checkForSave() {
+  const hint = document.getElementById('continue-hint');
+  hint.style.display = PersistenceManager.exists() ? 'block' : 'none';
+}
+
+// ============================================================
+// OVERLAY & TRANSITION HELPERS
+// ============================================================
+function showOverlay(id) {
+  hideAllOverlays();
+  const el = document.getElementById(id);
+  if (el) el.classList.add('active');
+}
+
+function hideAllOverlays() {
+  document.querySelectorAll('.overlay').forEach(o => o.classList.remove('active'));
+}
+
+function fade(callback) {
+  const f = document.getElementById('fade-overlay');
+  f.classList.add('fade-in');
+  setTimeout(() => {
+    callback();
+    setTimeout(() => f.classList.remove('fade-in'), 50);
+  }, 420);
+}
+
+// ============================================================
+// INIT
+// ============================================================
+buildColorSwatches();
+checkForSave();
+requestAnimationFrame(gameLoop);
+</script>
+</body>
+</html>
