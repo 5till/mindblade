@@ -32,7 +32,6 @@
     image-rendering: pixelated;
   }
 
-  /* Overlays */
   .overlay {
     position: absolute;
     top: 0; left: 0;
@@ -42,7 +41,6 @@
 
   .overlay.active { display: flex; }
 
-  /* Title screen overlay */
   #title-overlay {
     flex-direction: column;
     align-items: center;
@@ -51,8 +49,7 @@
   }
 
   #title-overlay .title-art {
-    width: 100%;
-    height: 100%;
+    width: 100%; height: 100%;
     position: absolute;
     top: 0; left: 0;
     pointer-events: none;
@@ -66,7 +63,6 @@
     align-items: center;
     justify-content: center;
     height: 100%;
-    gap: 0;
   }
 
   .game-title {
@@ -76,7 +72,7 @@
     color: #4aeadc;
     letter-spacing: 8px;
     text-transform: uppercase;
-    text-shadow: 0 0 20px rgba(74, 234, 220, 0.5), 0 0 60px rgba(74, 234, 220, 0.2);
+    text-shadow: 0 0 20px rgba(74,234,220,0.5), 0 0 60px rgba(74,234,220,0.2);
     margin-bottom: 8px;
   }
 
@@ -119,7 +115,6 @@
     50% { opacity: 0; }
   }
 
-  /* Character creation overlay */
   #char-create-overlay {
     flex-direction: column;
     align-items: center;
@@ -130,7 +125,7 @@
   .char-create-panel {
     width: 420px;
     border: 2px solid #4aeadc;
-    background: rgba(10, 10, 15, 0.95);
+    background: rgba(10,10,15,0.95);
     padding: 32px;
     position: relative;
   }
@@ -156,9 +151,7 @@
     margin-bottom: 28px;
   }
 
-  .field-group {
-    margin-bottom: 22px;
-  }
+  .field-group { margin-bottom: 22px; }
 
   .field-label {
     font-family: 'Exo 2', sans-serif;
@@ -171,11 +164,7 @@
     display: block;
   }
 
-  /* Gender selection */
-  .gender-options {
-    display: flex;
-    gap: 12px;
-  }
+  .gender-options { display: flex; gap: 12px; }
 
   .gender-btn {
     flex: 1;
@@ -196,18 +185,9 @@
     gap: 8px;
   }
 
-  .gender-btn:hover {
-    border-color: #4aeadc;
-    color: #e0e8ef;
-  }
+  .gender-btn:hover { border-color: #4aeadc; color: #e0e8ef; }
+  .gender-btn.selected { border-color: #4aeadc; color: #4aeadc; background: rgba(74,234,220,0.08); }
 
-  .gender-btn.selected {
-    border-color: #4aeadc;
-    color: #4aeadc;
-    background: rgba(74, 234, 220, 0.08);
-  }
-
-  /* Name input */
   .name-input {
     width: 100%;
     background: transparent;
@@ -221,37 +201,21 @@
     transition: border-color 0.15s;
   }
 
-  .name-input:focus {
-    border-color: #4aeadc;
-    background: rgba(74, 234, 220, 0.04);
-  }
-
+  .name-input:focus { border-color: #4aeadc; background: rgba(74,234,220,0.04); }
   .name-input::placeholder { color: #3a4a5a; }
 
-  /* Color picker */
-  .color-options {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-  }
+  .color-options { display: flex; gap: 10px; flex-wrap: wrap; }
 
   .color-swatch {
-    width: 32px;
-    height: 32px;
+    width: 32px; height: 32px;
     border: 2px solid transparent;
     cursor: pointer;
     transition: transform 0.1s, border-color 0.1s;
   }
 
   .color-swatch:hover { transform: scale(1.15); }
+  .color-swatch.selected { border-color: #e0e8ef; transform: scale(1.1); box-shadow: 0 0 8px rgba(224,232,239,0.4); }
 
-  .color-swatch.selected {
-    border-color: #e0e8ef;
-    transform: scale(1.1);
-    box-shadow: 0 0 8px rgba(224, 232, 239, 0.4);
-  }
-
-  /* Confirm button */
   .confirm-btn {
     width: 100%;
     padding: 12px;
@@ -268,17 +232,9 @@
     margin-top: 8px;
   }
 
-  .confirm-btn:hover {
-    background: rgba(74, 234, 220, 0.12);
-    color: #e0e8ef;
-  }
+  .confirm-btn:hover { background: rgba(74,234,220,0.12); color: #e0e8ef; }
+  .confirm-btn:disabled { opacity: 0.3; cursor: not-allowed; }
 
-  .confirm-btn:disabled {
-    opacity: 0.3;
-    cursor: not-allowed;
-  }
-
-  /* Pixel border corners on panel */
   .corner-tl, .corner-tr, .corner-bl, .corner-br {
     position: absolute;
     width: 6px; height: 6px;
@@ -289,7 +245,6 @@
   .corner-bl { bottom: 3px; left: 3px; }
   .corner-br { bottom: 3px; right: 3px; }
 
-  /* Fade transition */
   #fade-overlay {
     position: absolute;
     top: 0; left: 0;
@@ -309,7 +264,6 @@
 <div id="game-container">
   <canvas id="game-canvas" width="640" height="480"></canvas>
 
-  <!-- Title Screen -->
   <div id="title-overlay" class="overlay active">
     <canvas id="title-art-canvas" class="title-art" width="640" height="480"></canvas>
     <div class="title-content">
@@ -320,7 +274,6 @@
     </div>
   </div>
 
-  <!-- Character Creation -->
   <div id="char-create-overlay" class="overlay">
     <div class="char-create-panel">
       <div class="corner-tl"></div>
@@ -333,24 +286,16 @@
       <div class="field-group">
         <span class="field-label">Origin</span>
         <div class="gender-options">
-          <button class="gender-btn" id="gender-m" onclick="selectGender('m')">
-            <span>⬡</span> WARRIOR
-          </button>
-          <button class="gender-btn" id="gender-f" onclick="selectGender('f')">
-            <span>◈</span> WANDERER
-          </button>
+          <button class="gender-btn" id="gender-m" onclick="selectGender('m')"><span>⬡</span> WARRIOR</button>
+          <button class="gender-btn" id="gender-f" onclick="selectGender('f')"><span>◈</span> WANDERER</button>
         </div>
       </div>
 
       <div class="field-group">
         <span class="field-label">Name</span>
-        <input type="text"
-               class="name-input"
-               id="char-name-input"
+        <input type="text" class="name-input" id="char-name-input"
                placeholder="Enter your character's name..."
-               maxlength="20"
-               autocomplete="off"
-               oninput="updateConfirmBtn()">
+               maxlength="20" autocomplete="off" oninput="updateConfirmBtn()">
       </div>
 
       <div class="field-group">
@@ -364,16 +309,17 @@
     </div>
   </div>
 
-  <!-- Fade overlay for transitions -->
   <div id="fade-overlay"></div>
 </div>
 
 <script>
 // ============================================================
-// CONSTANTS — update these before deploying
+// CONSTANTS
 // ============================================================
 const FORMSPREE_URL = 'https://formspree.io/f/REPLACE_ME';
 const CALENDAR_URL  = 'https://calendly.com/REPLACE_ME';
+const TILE = 32;
+const T = Object.freeze({ FLOOR: 0, WALL: 1, NPC: 2, EXIT: 3 });
 
 // ============================================================
 // OUTFIT COLORS
@@ -390,10 +336,42 @@ const OUTFIT_COLORS = [
 ];
 
 // ============================================================
-// GAME STATE MACHINE
+// ZONE 1 — THE CROSSROADS  (20 cols × 15 rows)
+// ============================================================
+const ZONE1_MAP = [
+//   0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19
+  [  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], // 0
+  [  1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], // 1
+  [  1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1], // 2
+  [  1, 0, 0, 1, 0, 0, 2, 0, 0, 0, 0, 0, 0, 2, 0, 0, 1, 0, 0, 1], // 3
+  [  1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], // 4
+  [  1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], // 5
+  [  1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1], // 6
+  [  1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1], // 7
+  [  1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1], // 8
+  [  1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], // 9
+  [  1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], // 10
+  [  1, 0, 0, 1, 0, 0, 2, 0, 0, 0, 0, 0, 0, 2, 0, 0, 1, 0, 0, 1], // 11
+  [  1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1], // 12
+  [  1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], // 13
+  [  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], // 14
+];
+
+// NPC visual definitions per zone (index = zone number)
+const ZONE_NPCS = [
+  [
+    { x: 6,  y: 3,  color: '#4a7a8a', darkColor: '#2a4a5a' },
+    { x: 13, y: 3,  color: '#7a5a8a', darkColor: '#4a3a5a' },
+    { x: 6,  y: 11, color: '#8a7040', darkColor: '#5a4828' },
+    { x: 13, y: 11, color: '#4a7a5a', darkColor: '#2a4a3a' },
+  ],
+];
+
+// ============================================================
+// STATES
 // ============================================================
 const STATES = {
-  TITLE:           'TITLE',
+  TITLE:            'TITLE',
   CHARACTER_CREATE: 'CHARACTER_CREATE',
   PLAYING:          'PLAYING',
   ENCOUNTER:        'ENCOUNTER',
@@ -403,6 +381,81 @@ const STATES = {
   POST_RESULTS:     'POST_RESULTS',
 };
 
+// ============================================================
+// UTILITIES
+// ============================================================
+function mulberry32(seed) {
+  return function() {
+    seed |= 0; seed = seed + 0x6D2B79F5 | 0;
+    let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+
+function darkenHex(hex, factor) {
+  const h = hex.replace('#', '');
+  const r = Math.min(255, Math.floor(parseInt(h.slice(0,2), 16) * factor));
+  const g = Math.min(255, Math.floor(parseInt(h.slice(2,4), 16) * factor));
+  const b = Math.min(255, Math.floor(parseInt(h.slice(4,6), 16) * factor));
+  return `rgb(${r},${g},${b})`;
+}
+
+function drawPixelMountains(tctx, baseY, spread, scale) {
+  const peaks = [80, 200, 330, 450, 580];
+  for (const px of peaks) {
+    const h = (40 + Math.sin(px * 0.02) * 20) * scale;
+    tctx.beginPath();
+    tctx.moveTo(px - spread, baseY);
+    tctx.lineTo(px, baseY - h);
+    tctx.lineTo(px + spread, baseY);
+    tctx.closePath();
+    tctx.fill();
+  }
+}
+
+function drawTorch(tctx, x, y, t) {
+  tctx.fillStyle = '#4a3020';
+  tctx.fillRect(x - 2, y - 24, 4, 28);
+  const f1 = Math.sin(t * 8 + x) * 0.3 + 0.7;
+  const f2 = Math.sin(t * 11 + x * 0.5) * 0.2 + 0.8;
+  tctx.globalAlpha = 0.4 * f1;
+  tctx.fillStyle = '#ff6020';
+  tctx.fillRect(x - 5, y - 38, 10, 14);
+  tctx.globalAlpha = 0.6 * f2;
+  tctx.fillStyle = '#ffa040';
+  tctx.fillRect(x - 3, y - 40, 6, 12);
+  tctx.globalAlpha = 0.9 * f1;
+  tctx.fillStyle = '#ffe080';
+  tctx.fillRect(x - 2, y - 36, 4, 8);
+  tctx.globalAlpha = 1;
+}
+
+// ============================================================
+// TITLE ART DATA
+// ============================================================
+const TitleArt = {
+  stars: (function() {
+    const s = [];
+    const rng = mulberry32(0xdeadbeef);
+    const colors = ['#e0e8ef', '#4aeadc', '#8aa0b0', '#ffffff'];
+    for (let i = 0; i < 120; i++) {
+      s.push({
+        x: Math.floor(rng() * 640), y: Math.floor(rng() * 380),
+        size: rng() < 0.85 ? 1 : 2,
+        alpha: 0.3 + rng() * 0.7,
+        speed: 0.3 + rng() * 0.8,
+        phase: rng() * Math.PI * 2,
+        color: colors[Math.floor(rng() * colors.length)],
+      });
+    }
+    return s;
+  })(),
+};
+
+// ============================================================
+// GAME STATE MACHINE
+// ============================================================
 const GameStateMachine = {
   state: STATES.TITLE,
 
@@ -423,7 +476,12 @@ const GameStateMachine = {
         break;
       case STATES.PLAYING:
         hideAllOverlays();
-        Renderer.drawPlaceholderWorld();
+        if (!PlayerEntity._positionSet) {
+          PlayerEntity.x = 9;
+          PlayerEntity.y = 7;
+          PlayerEntity.facing = 'down';
+          PlayerEntity._positionSet = true;
+        }
         break;
     }
   },
@@ -445,25 +503,26 @@ const GameStateMachine = {
 // PLAYER ENTITY
 // ============================================================
 const PlayerEntity = {
-  name:       '',
-  gender:     'm',
-  outfitColor: OUTFIT_COLORS[0].hex,
-  zone:       0,
-  x:          5,
-  y:          5,
+  name:          '',
+  gender:        'm',
+  outfitColor:   OUTFIT_COLORS[0].hex,
+  zone:          0,
+  x:             9,
+  y:             7,
+  facing:        'down',
+  walkFrame:     0,
+  _positionSet:  false,
 
   fromSave(data) {
     Object.assign(this, data);
+    this._positionSet = true;
   },
 
   toSave() {
     return {
-      name:        this.name,
-      gender:      this.gender,
-      outfitColor: this.outfitColor,
-      zone:        this.zone,
-      x:           this.x,
-      y:           this.y,
+      name: this.name, gender: this.gender, outfitColor: this.outfitColor,
+      zone: this.zone, x: this.x, y: this.y,
+      facing: this.facing, walkFrame: this.walkFrame, _positionSet: true,
     };
   },
 };
@@ -473,30 +532,73 @@ const PlayerEntity = {
 // ============================================================
 const PersistenceManager = {
   KEY: 'yakiire_save',
+  save(state)  { try { localStorage.setItem(this.KEY, JSON.stringify(state)); } catch(e) {} },
+  load()       { try { const r = localStorage.getItem(this.KEY); return r ? JSON.parse(r) : null; } catch(e) { return null; } },
+  clear()      { localStorage.removeItem(this.KEY); },
+  exists()     { return localStorage.getItem(this.KEY) !== null; },
+};
 
-  save(state) {
-    try {
-      localStorage.setItem(this.KEY, JSON.stringify(state));
-    } catch(e) {
-      console.warn('[PM] Save failed:', e);
+// ============================================================
+// WORLD MAP
+// ============================================================
+const WorldMap = {
+  maps: [ZONE1_MAP],
+
+  currentMap() { return this.maps[PlayerEntity.zone] || ZONE1_MAP; },
+
+  getTile(x, y) {
+    const map = this.currentMap();
+    if (y < 0 || y >= map.length || x < 0 || x >= map[0].length) return T.WALL;
+    return map[y][x];
+  },
+
+  isPassable(x, y) {
+    const tile = this.getTile(x, y);
+    return tile === T.FLOOR || tile === T.EXIT;
+  },
+
+  adjacentNPC() {
+    const { x, y } = PlayerEntity;
+    for (const [dx, dy] of [[0,-1],[0,1],[-1,0],[1,0]]) {
+      if (this.getTile(x+dx, y+dy) === T.NPC) return { x: x+dx, y: y+dy };
     }
+    return null;
+  },
+};
+
+// ============================================================
+// PLAYER CONTROLLER
+// ============================================================
+const PlayerController = {
+  lastMoveTime: 0,
+  MOVE_DELAY: 140,
+
+  tryMove(dx, dy) {
+    const now = performance.now();
+    if (now - this.lastMoveTime < this.MOVE_DELAY) return;
+    this.lastMoveTime = now;
+
+    if      (dx < 0) PlayerEntity.facing = 'left';
+    else if (dx > 0) PlayerEntity.facing = 'right';
+    else if (dy < 0) PlayerEntity.facing = 'up';
+    else             PlayerEntity.facing = 'down';
+
+    const nx = PlayerEntity.x + dx;
+    const ny = PlayerEntity.y + dy;
+
+    if (!WorldMap.isPassable(nx, ny)) return;
+
+    PlayerEntity.x = nx;
+    PlayerEntity.y = ny;
+    PlayerEntity.walkFrame = 1 - PlayerEntity.walkFrame;
+    AudioManager.playStep();
   },
 
-  load() {
-    try {
-      const raw = localStorage.getItem(this.KEY);
-      return raw ? JSON.parse(raw) : null;
-    } catch(e) {
-      return null;
-    }
-  },
-
-  clear() {
-    localStorage.removeItem(this.KEY);
-  },
-
-  exists() {
-    return localStorage.getItem(this.KEY) !== null;
+  tryInteract() {
+    const adj = WorldMap.adjacentNPC();
+    if (!adj) return;
+    console.log('[PC] Interact with NPC at', adj.x, adj.y, '— encounter fires in Phase 3');
+    // EncounterController.start(adj.x, adj.y) — Phase 3
   },
 };
 
@@ -507,147 +609,227 @@ const canvas = document.getElementById('game-canvas');
 const ctx    = canvas.getContext('2d');
 
 const Renderer = {
-  // Draw the animated title background art
   drawTitleArt() {
-    const tc = document.getElementById('title-art-canvas');
+    const tc   = document.getElementById('title-art-canvas');
     const tctx = tc.getContext('2d');
-    const t = performance.now() / 1000;
-
+    const t    = performance.now() / 1000;
     tctx.clearRect(0, 0, 640, 480);
-
-    // Starfield
     tctx.fillStyle = '#0a0a0f';
     tctx.fillRect(0, 0, 640, 480);
-
-    // Draw pixel stars
-    const stars = TitleArt.stars;
-    for (let i = 0; i < stars.length; i++) {
-      const s = stars[i];
-      const twinkle = 0.4 + 0.6 * Math.abs(Math.sin(t * s.speed + s.phase));
-      tctx.globalAlpha = twinkle * s.alpha;
+    for (const s of TitleArt.stars) {
+      const tw = 0.4 + 0.6 * Math.abs(Math.sin(t * s.speed + s.phase));
+      tctx.globalAlpha = tw * s.alpha;
       tctx.fillStyle = s.color;
       tctx.fillRect(s.x, s.y, s.size, s.size);
     }
-
     tctx.globalAlpha = 1;
-
-    // Bottom ground line
     tctx.fillStyle = '#0d1a20';
     tctx.fillRect(0, 400, 640, 80);
-
-    // Horizon glow
     const grd = tctx.createLinearGradient(0, 320, 0, 410);
     grd.addColorStop(0, 'rgba(74,234,220,0)');
     grd.addColorStop(1, 'rgba(74,234,220,0.06)');
     tctx.fillStyle = grd;
     tctx.fillRect(0, 320, 640, 90);
-
-    // Distant mountains (pixel style)
     tctx.fillStyle = '#0d1f2a';
     drawPixelMountains(tctx, 360, 100, 0.8);
     tctx.fillStyle = '#0a1520';
     drawPixelMountains(tctx, 340, 140, 1.2);
-
-    // Foreground torches (flicker)
     drawTorch(tctx, 80,  370, t);
     drawTorch(tctx, 560, 370, t);
   },
 
-  drawPlaceholderWorld() {
-    ctx.fillStyle = '#0a0a0f';
+  drawWorld() {
+    const map = WorldMap.currentMap();
+    ctx.fillStyle = '#070b10';
     ctx.fillRect(0, 0, 640, 480);
 
-    ctx.fillStyle = '#1a2a3a';
-    // Draw a simple grid
-    for (let x = 0; x < 640; x += 32) {
-      ctx.fillRect(x, 0, 1, 480);
-    }
-    for (let y = 0; y < 480; y += 32) {
-      ctx.fillRect(0, y, 640, 1);
+    // Tiles
+    for (let row = 0; row < map.length; row++) {
+      for (let col = 0; col < map[row].length; col++) {
+        this._drawTile(map[row][col], col * TILE, row * TILE, col, row);
+      }
     }
 
-    ctx.fillStyle = '#4aeadc';
-    ctx.font = '14px "Exo 2", monospace';
-    ctx.textAlign = 'center';
-    ctx.fillText('ZONE 1 — THE CROSSROADS', 320, 240);
-    ctx.fillStyle = '#8aa0b0';
-    ctx.font = '11px "DM Sans", monospace';
-    ctx.fillText('(World loads in Phase 2)', 320, 262);
+    // NPCs
+    for (const npc of (ZONE_NPCS[PlayerEntity.zone] || [])) {
+      this._drawNPC(npc);
+    }
+
+    // Trigger highlight + interact prompt when adjacent
+    const adj = WorldMap.adjacentNPC();
+    if (adj) this._drawTriggerHighlight(adj.x, adj.y);
+
+    // Player on top
+    this._drawPlayer();
+
+    // Zone HUD label
+    ctx.fillStyle = 'rgba(74,234,220,0.4)';
+    ctx.font = '10px "Exo 2", monospace';
     ctx.textAlign = 'left';
+    ctx.fillText('ZONE I  —  THE CROSSROADS', 8, 14);
+  },
+
+  _drawTile(tile, px, py, col, row) {
+    if (tile === T.WALL) {
+      ctx.fillStyle = '#1c2a3a';
+      ctx.fillRect(px, py, TILE, TILE);
+      // Top highlight edge
+      ctx.fillStyle = '#263848';
+      ctx.fillRect(px, py, TILE, 3);
+      // Bottom shadow edge
+      ctx.fillStyle = '#121e2c';
+      ctx.fillRect(px, py + TILE - 3, TILE, 3);
+      // Stone mortar detail (alternating rows)
+      ctx.fillStyle = '#101820';
+      if (row % 2 === 0) {
+        ctx.fillRect(px + 2, py + 10, TILE - 4, 1);
+        ctx.fillRect(px + 2, py + 21, TILE - 4, 1);
+      } else {
+        ctx.fillRect(px + 2, py + 15, TILE - 4, 1);
+        ctx.fillRect(px + 2, py + 26, TILE - 4, 1);
+      }
+    } else {
+      // Floor (T.FLOOR, T.NPC, T.EXIT all render as floor)
+      ctx.fillStyle = '#0c1822';
+      ctx.fillRect(px, py, TILE, TILE);
+      // Subtle grid lines
+      ctx.fillStyle = '#081016';
+      ctx.fillRect(px, py, TILE, 1);
+      ctx.fillRect(px, py, 1, TILE);
+    }
+  },
+
+  _drawNPC(npc) {
+    const px = npc.x * TILE;
+    const py = npc.y * TILE;
+    const t  = performance.now() / 1000;
+
+    // Shadow
+    ctx.fillStyle = 'rgba(0,0,0,0.45)';
+    ctx.fillRect(px + 9, py + 26, 14, 4);
+
+    // Robe body
+    ctx.fillStyle = npc.color;
+    ctx.fillRect(px + 10, py + 12, 12, 12);
+
+    // Robe hem (darker)
+    ctx.fillStyle = npc.darkColor;
+    ctx.fillRect(px + 10, py + 22, 12, 4);
+
+    // Hood outer
+    ctx.fillStyle = npc.darkColor;
+    ctx.fillRect(px + 9,  py + 3,  14, 10);
+    ctx.fillRect(px + 10, py + 2,  12, 3);
+
+    // Face shadow inside hood
+    ctx.fillStyle = '#080d14';
+    ctx.fillRect(px + 12, py + 6, 8, 6);
+
+    // Glowing eyes (animated pulse)
+    const pulse = 0.5 + 0.5 * Math.sin(t * 2.5 + npc.x * 0.7);
+    ctx.globalAlpha = 0.45 + 0.55 * pulse;
+    ctx.fillStyle = '#4aeadc';
+    ctx.fillRect(px + 13, py + 8, 2, 2);
+    ctx.fillRect(px + 17, py + 8, 2, 2);
+    ctx.globalAlpha = 1;
+  },
+
+  _drawTriggerHighlight(tx, ty) {
+    const t     = performance.now() / 1000;
+    const pulse = 0.25 + 0.2 * Math.sin(t * 4);
+
+    // Pulsing border around NPC
+    ctx.strokeStyle = `rgba(74,234,220,${pulse + 0.15})`;
+    ctx.lineWidth   = 2;
+    ctx.strokeRect(tx * TILE + 1, ty * TILE + 1, TILE - 2, TILE - 2);
+    ctx.lineWidth   = 1;
+
+    // "!" above player
+    const ppx = PlayerEntity.x * TILE + TILE / 2;
+    const ppy = PlayerEntity.y * TILE;
+    ctx.fillStyle  = `rgba(74,234,220,${0.65 + 0.35 * Math.sin(t * 5)})`;
+    ctx.font       = 'bold 11px "Exo 2", monospace';
+    ctx.textAlign  = 'center';
+    ctx.fillText('!', ppx, ppy - 2);
+    ctx.textAlign  = 'left';
+  },
+
+  _drawPlayer() {
+    const px     = PlayerEntity.x * TILE;
+    const py     = PlayerEntity.y * TILE;
+    const color  = PlayerEntity.outfitColor;
+    const dark   = darkenHex(color, 0.5);
+    const frame  = PlayerEntity.walkFrame;
+    const facing = PlayerEntity.facing;
+    const female = PlayerEntity.gender === 'f';
+
+    // Ground shadow
+    ctx.fillStyle = 'rgba(0,0,0,0.4)';
+    ctx.fillRect(px + 9, py + 27, 14, 4);
+
+    // Legs with walk animation (alternate y offset)
+    const lLegOff = frame === 1 ? -2 : 0;
+    const rLegOff = frame === 1 ?  2 : 0;
+    ctx.fillStyle = dark;
+    ctx.fillRect(px + 10, py + 20 + lLegOff, 5, 9);
+    ctx.fillRect(px + 17, py + 20 + rLegOff, 5, 9);
+
+    // Skirt overlay for female variant
+    if (female) {
+      ctx.fillStyle = darkenHex(color, 0.7);
+      ctx.fillRect(px + 9, py + 19, 14, 8);
+    }
+
+    // Body
+    ctx.fillStyle = color;
+    ctx.fillRect(px + 9, py + 11, 14, 10);
+
+    // Pauldrons for male variant
+    if (!female) {
+      ctx.fillStyle = darkenHex(color, 0.75);
+      ctx.fillRect(px + 6,  py + 11, 4, 5);
+      ctx.fillRect(px + 22, py + 11, 4, 5);
+    }
+
+    // Belt
+    ctx.fillStyle = dark;
+    ctx.fillRect(px + 9, py + 19, 14, 2);
+
+    // Arms (hide the side arm when facing that direction)
+    ctx.fillStyle = color;
+    if (facing !== 'right') ctx.fillRect(px + 5,  py + 12, 4, 7);
+    if (facing !== 'left')  ctx.fillRect(px + 23, py + 12, 4, 7);
+
+    // Head
+    ctx.fillStyle = '#e8b888';
+    ctx.fillRect(px + 11, py + 3, 10, 8);
+
+    // Hair
+    ctx.fillStyle = female ? '#6a2810' : '#3a1a08';
+    ctx.fillRect(px + 11, py + 3, 10, 3);
+    if (female) {
+      // Longer side hair
+      ctx.fillRect(px + 9,  py + 4, 2, 8);
+      ctx.fillRect(px + 21, py + 4, 2, 8);
+    }
+
+    // Eyes (direction-aware)
+    if (facing !== 'up') {
+      ctx.fillStyle = '#221208';
+      if (facing === 'left') {
+        ctx.fillRect(px + 12, py + 7, 2, 2);
+      } else if (facing === 'right') {
+        ctx.fillRect(px + 18, py + 7, 2, 2);
+      } else {
+        ctx.fillRect(px + 13, py + 7, 2, 2);
+        ctx.fillRect(px + 17, py + 7, 2, 2);
+      }
+    }
   },
 };
 
 // ============================================================
-// TITLE ART HELPERS
-// ============================================================
-const TitleArt = {
-  stars: (function() {
-    const s = [];
-    const rng = mulberry32(0xdeadbeef);
-    const colors = ['#e0e8ef','#4aeadc','#8aa0b0','#ffffff'];
-    for (let i = 0; i < 120; i++) {
-      s.push({
-        x:     Math.floor(rng() * 640),
-        y:     Math.floor(rng() * 380),
-        size:  rng() < 0.85 ? 1 : 2,
-        alpha: 0.3 + rng() * 0.7,
-        speed: 0.3 + rng() * 0.8,
-        phase: rng() * Math.PI * 2,
-        color: colors[Math.floor(rng() * colors.length)],
-      });
-    }
-    return s;
-  })(),
-};
-
-function mulberry32(seed) {
-  return function() {
-    seed |= 0; seed = seed + 0x6D2B79F5 | 0;
-    let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
-    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
-    return ((t ^ t >>> 14) >>> 0) / 4294967296;
-  };
-}
-
-function drawPixelMountains(tctx, baseY, spread, scale) {
-  const peaks = [80, 200, 330, 450, 580];
-  for (const px of peaks) {
-    const h = (40 + Math.sin(px * 0.02) * 20) * scale;
-    tctx.beginPath();
-    tctx.moveTo(px - spread, baseY);
-    tctx.lineTo(px, baseY - h);
-    tctx.lineTo(px + spread, baseY);
-    tctx.closePath();
-    tctx.fill();
-  }
-}
-
-function drawTorch(tctx, x, y, t) {
-  // Pole
-  tctx.fillStyle = '#4a3020';
-  tctx.fillRect(x - 2, y - 24, 4, 28);
-
-  // Flame (animated)
-  const flicker = Math.sin(t * 8 + x) * 0.3 + 0.7;
-  const flicker2 = Math.sin(t * 11 + x * 0.5) * 0.2 + 0.8;
-
-  tctx.globalAlpha = 0.4 * flicker;
-  tctx.fillStyle = '#ff6020';
-  tctx.fillRect(x - 5, y - 38, 10, 14);
-
-  tctx.globalAlpha = 0.6 * flicker2;
-  tctx.fillStyle = '#ffa040';
-  tctx.fillRect(x - 3, y - 40, 6, 12);
-
-  tctx.globalAlpha = 0.9 * flicker;
-  tctx.fillStyle = '#ffe080';
-  tctx.fillRect(x - 2, y - 36, 4, 8);
-
-  tctx.globalAlpha = 1;
-}
-
-// ============================================================
-// AUDIO MANAGER (all no-ops in Phase 1)
+// AUDIO MANAGER (all no-ops until Phase 8)
 // ============================================================
 const AudioManager = {
   playStep()          {},
@@ -663,11 +845,12 @@ const AudioManager = {
 let lastFrameTime = 0;
 
 function gameLoop(timestamp) {
-  const dt = timestamp - lastFrameTime;
   lastFrameTime = timestamp;
 
   if (GameStateMachine.state === STATES.TITLE) {
     Renderer.drawTitleArt();
+  } else if (GameStateMachine.state === STATES.PLAYING) {
+    Renderer.drawWorld();
   }
 
   requestAnimationFrame(gameLoop);
@@ -680,10 +863,29 @@ document.addEventListener('keydown', (e) => {
   const state = GameStateMachine.state;
 
   if (state === STATES.TITLE) {
-    // Any key advances from title
     if (!['F5','F11','F12'].includes(e.key)) {
       e.preventDefault();
       fade(() => GameStateMachine.transition(STATES.CHARACTER_CREATE));
+    }
+    return;
+  }
+
+  if (state === STATES.PLAYING) {
+    let dx = 0, dy = 0;
+    switch (e.key) {
+      case 'ArrowUp':    case 'w': case 'W': dy = -1; break;
+      case 'ArrowDown':  case 's': case 'S': dy =  1; break;
+      case 'ArrowLeft':  case 'a': case 'A': dx = -1; break;
+      case 'ArrowRight': case 'd': case 'D': dx =  1; break;
+      case ' ':
+      case 'Enter':
+        e.preventDefault();
+        PlayerController.tryInteract();
+        return;
+    }
+    if (dx !== 0 || dy !== 0) {
+      e.preventDefault();
+      PlayerController.tryMove(dx, dy);
     }
   }
 });
@@ -721,20 +923,17 @@ function selectColor(hex, el) {
 
 function updateConfirmBtn() {
   const name = document.getElementById('char-name-input').value.trim();
-  const btn  = document.getElementById('confirm-btn');
-  btn.disabled = !(selectedGender && name.length >= 1);
+  document.getElementById('confirm-btn').disabled = !(selectedGender && name.length >= 1);
 }
 
 function confirmCharacter() {
   const name = document.getElementById('char-name-input').value.trim();
   if (!selectedGender || !name) return;
-
   PlayerEntity.name        = name;
   PlayerEntity.gender      = selectedGender;
   PlayerEntity.outfitColor = selectedColor;
-
+  PlayerEntity._positionSet = false;
   PersistenceManager.save({ player: PlayerEntity.toSave() });
-
   fade(() => GameStateMachine.transition(STATES.PLAYING));
 }
 
@@ -742,8 +941,8 @@ function confirmCharacter() {
 // TITLE SCREEN HELPERS
 // ============================================================
 function checkForSave() {
-  const hint = document.getElementById('continue-hint');
-  hint.style.display = PersistenceManager.exists() ? 'block' : 'none';
+  document.getElementById('continue-hint').style.display =
+    PersistenceManager.exists() ? 'block' : 'none';
 }
 
 // ============================================================

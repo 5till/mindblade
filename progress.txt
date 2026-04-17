@@ -23,4 +23,20 @@ YAKI-IRE PROGRESS LOG
 - FORMSPREE_URL and CALENDAR_URL placeholder constants at top of file
 - PersistenceManager, PlayerEntity, AudioManager (no-ops) scaffolded
 
-NEXT TASK: Phase 2 — Player Movement + Zone 1 World (GitHub issue #3)
+
+[Phase 2 — Player Movement + Zone 1 World] COMPLETE
+- ZONE1_MAP: 20×15 tile grid (T.FLOOR, T.WALL, T.NPC tiles)
+- WorldMap module: getTile, isPassable, adjacentNPC
+- PlayerController: tryMove (140ms cooldown), tryInteract (logs, Phase 3 hook)
+- PlayerEntity: added facing (up/down/left/right), walkFrame (0/1), _positionSet
+- Renderer.drawWorld(): tiles, NPCs, trigger highlight, player sprite, zone HUD label
+- Renderer._drawTile(): walls with stone mortar detail, floor with grid lines
+- Renderer._drawNPC(): hooded figure with animated glowing cyan eyes, 4 unique colors
+- Renderer._drawPlayer(): gender variants (pauldrons vs skirt+hair), outfit color,
+  2-frame walk animation (leg offset), direction-aware eyes and arms
+- Renderer._drawTriggerHighlight(): pulsing border on NPC tile + "!" above player
+- InputController: WASD/arrows move player, Space/Enter calls tryInteract
+- Player start: (9,7) center of map; position saved/restored via PersistenceManager
+- Input disabled outside PLAYING state
+
+NEXT TASK: Phase 3 — Encounter System + Scoring Engine + Content Database (GitHub issue #4)
