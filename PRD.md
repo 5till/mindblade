@@ -61,6 +61,25 @@ The game is self-contained, deploys to GitHub Pages at `5till.github.io/mindblad
 36. As a coach, I want the game to deploy as a single HTML file to GitHub Pages with no build step, so that updates are trivial.
 37. As a coach, I want the landing page and game file to be separate, so that the landing page can be updated independently with copywriting, social proof, and conversion optimization.
 
+### Amendment 1 — Character Creation, Tutorial, and Gameplay Refinements
+
+38. As a player, I want to select my gender by clicking one of two unlabeled character sprites side by side, so that the choice feels visual and personal rather than form-like.
+39. As a player, I want to choose from 4 origin options (The Exile, The Seeker, The Witness, The Warrior), each with a short hover description, so that my character feels like it has a history.
+40. As a player, I want my origin choice to change my character's outfit visually, so that the selection feels meaningful.
+41. As a player, I want to see a live preview of my character sprite on the character creation screen that updates as I change gender and origin, so that I know what I'll look like before I start.
+42. As a player, I want a floating tutorial prompt at the top of the screen when the game starts telling me how to move, so that I know the controls without reading a manual.
+43. As a player, I want a second tutorial prompt to appear when I'm adjacent to my first NPC telling me how to interact, so that controls are taught contextually.
+44. As a player, I want to start outside a tutorial room and walk into it to begin the first encounter, so that movement is learned before anything else is asked of me.
+45. As a player, I want the first encounter to be the only one in the tutorial room, so that the space feels focused and intentional.
+46. As a player, I want a route to visibly open with an animation after completing the first encounter, so that progression feels like discovery.
+47. As a player, I want the remaining 3 Zone 1 encounters to be in a second room I walk into after the tutorial room, so that the world has physical structure.
+48. As a player, I want Zone 1 to feel like an outdoor crossroads environment, so that the zone theme (Agency, choice, direction) reads visually.
+49. As a player, I want my character to start moving instantly when I press a direction key, so that the controls feel responsive.
+50. As a player, I want to navigate encounter response options with arrow keys and confirm with Space/Enter, so that the interaction feels like a controller rather than a quiz.
+51. As a player, I want NPC reactions to support up to 3 lines of text that I advance through with Space/Enter, so that meaningful responses have room to breathe.
+52. As a player, I want NPC reaction text to stay on screen until I dismiss it, so that I'm not rushed.
+53. As a player, I want to re-talk to any NPC I've already answered to change my response, so that I can correct a choice I second-guessed.
+
 ## Implementation Decisions
 
 ### Architecture
@@ -70,6 +89,10 @@ The game is self-contained, deploys to GitHub Pages at `5till.github.io/mindblad
 - **60fps game loop** via `requestAnimationFrame`.
 - **Tile size**: 32×32px.
 - **Two placeholder constants** at the top of the file: `FORMSPREE_URL` and `CALENDAR_URL`.
+- **Dialogue box spatial language**: Top box = tutorial prompts, system notifications, narrator (breaks fourth wall). Bottom box = NPC dialogue, encounter responses (in-world). Applies to all future UI additions.
+- **Movement**: Instant on key press — no input delay before first step.
+- **Encounter navigation**: Arrow keys highlight options, Space/Enter confirms. Number key shortcuts removed.
+- **Response revision**: Re-talking to a completed NPC reopens the encounter. Old score delta subtracted, new delta applied. Encounter stays marked complete.
 
 ### Modules
 

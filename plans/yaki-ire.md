@@ -14,17 +14,24 @@
 - **Audio**: `AudioManager` hooks defined from the start but all no-ops until the Audio Pass (Phase 8).
 - **Art**: Phase 1–7 use programmatic canvas art. Phase 9 replaces with base64-encoded PNG assets embedded in an `ASSETS` constant.
 - **Tile size**: 32×32px. Target 60fps via `requestAnimationFrame`.
+- **Dialogue box spatial language**: Top box = tutorial prompts, system notifications, narrator (breaks fourth wall). Bottom box = NPC dialogue, encounter responses (in-world). Durable rule — applies to all phases.
+- **Movement**: Instant on key press — no input delay before first step.
+- **Encounter navigation**: Arrow keys highlight options, Space/Enter confirms. Number key shortcuts removed.
+- **Response revision**: Re-talking to a completed NPC reopens encounter. Old score delta subtracted, new applied. Encounter stays marked complete.
+- **Origins**: 4 cosmetic choices — The Exile, The Seeker, The Witness, The Warrior. Each has a hover description and a distinct outfit visual. No effect on scoring.
 
 ---
 
 ## Phase 1: HTML Shell + Title Screen + Character Creation
 
-**User stories**: 1, 2, 3, 36, 37
+**User stories**: 1, 2, 3, 36, 37, 38, 39, 40, 41
 **GitHub issue**: https://github.com/5till/mindblade/issues/2
 
 ### What to build
 
-The complete HTML file scaffold: canvas setup, 60fps game loop, and the `GameStateMachine` skeleton with all state constants defined. The Yaki-ire title screen renders with the game palette (background `#0a0a0f`, accent `#4aeadc`) — title, subheading describing the term, and a Press Start prompt. Character creation flow: gender selection, name text input, outfit color palette picker. Confirmation transitions to a placeholder game world screen.
+The complete HTML file scaffold: canvas setup, 60fps game loop, and the `GameStateMachine` skeleton with all state constants defined. The Yaki-ire title screen renders with the game palette (background `#0a0a0f`, accent `#4aeadc`) — title, subheading describing the term, and a Press Start prompt.
+
+Character creation flow: two unlabeled character sprites side by side for gender selection (click to pick), name text input, 4 origin choices (The Exile, The Seeker, The Witness, The Warrior) each with a hover description and distinct outfit visual, and an outfit color palette picker. A live sprite preview updates in real time as gender and origin are changed. Confirmation transitions to a placeholder game world screen.
 
 Two placeholder constants at the top of the file: `FORMSPREE_URL` and `CALENDAR_URL`.
 
@@ -35,8 +42,14 @@ Two placeholder constants at the top of the file: `FORMSPREE_URL` and `CALENDAR_
 - [ ] Title screen renders with correct palette
 - [ ] "Yaki-ire" title and subheading visible
 - [ ] Press Start / any key advances to character creation
-- [ ] Character creation: gender (2 options), name (text input), outfit color (palette picker)
-- [ ] Confirming character creation transitions to a placeholder canvas screen
+- [ ] Two unlabeled sprites shown side by side; clicking one selects gender
+- [ ] 4 origin options displayed; hovering shows a short description for each
+- [ ] Each origin has a visually distinct outfit treatment on the sprite
+- [ ] Name text input present
+- [ ] Outfit color palette picker present
+- [ ] Live sprite preview updates in real time when gender or origin changes
+- [ ] Confirm button disabled until gender, origin, and name are all set
+- [ ] Confirming transitions to placeholder canvas screen
 - [ ] All 9 `GameStateMachine` states defined
 - [ ] 60fps game loop running
 - [ ] `FORMSPREE_URL` and `CALENDAR_URL` constants at top of file with placeholder values
@@ -45,23 +58,32 @@ Two placeholder constants at the top of the file: `FORMSPREE_URL` and `CALENDAR_
 
 ## Phase 2: Player Movement + Zone 1 World
 
-**User stories**: 4, 5, 6, 15, 16
+**User stories**: 4, 5, 6, 15, 16, 42, 43, 44, 45, 46, 47, 48, 49
 **GitHub issue**: https://github.com/5till/mindblade/issues/3
 
 ### What to build
 
-Zone 1 (The Crossroads) as a fully navigable tile grid. Player sprite drawn programmatically with a 2-frame walk animation and correct facing direction. WASD and arrow key movement, tile-by-tile. Collision detection against wall tiles. Outfit color applied as a hue transform over the base sprite. Four NPC trigger tiles placed at encounter positions — walking into them or pressing Space/Enter highlights them, but encounters don't fire yet.
+Zone 1 (The Crossroads) as a fully navigable outdoor tile grid (grass, sky, crossroads aesthetic). Player starts in an open area outside a tutorial room. A floating tutorial prompt appears at the top of the screen ("WASD / ↑↓←→ to move") and fades after the player's first step. A second prompt ("SPACE / ENTER to interact") appears when the player is first adjacent to an NPC and fades after first use. Both prompts use the top dialogue box and never reappear after dismissal.
+
+Zone 1 has two rooms connected by a corridor: the tutorial room (one NPC trigger) and the main room (three NPC triggers). The corridor between them is initially blocked. After completing the tutorial room encounter, the route opens with a visible animation. Player sprite drawn programmatically with gender and origin outfit variants, 2-frame walk animation, direction-aware facing. Movement is instant on key press with no input delay. Outfit color applied as a hue transform over the base sprite.
 
 ### Acceptance criteria
 
-- [ ] Zone 1 tile grid renders on canvas
-- [ ] Player sprite visible with gender variant matching character creation
+- [ ] Zone 1 renders as an outdoor crossroads environment (grass/sky tile treatment)
+- [ ] Player starts outside the tutorial room in open space
+- [ ] Floating "move" tutorial prompt appears at top on game start, fades after first step
+- [ ] Floating "interact" tutorial prompt appears at top when first adjacent to NPC, fades after first use
+- [ ] Tutorial prompts never reappear after dismissal (persisted in save state)
+- [ ] Tutorial room contains exactly 1 NPC trigger position
+- [ ] Main room contains exactly 3 NPC trigger positions
+- [ ] Corridor between rooms is impassable until tutorial encounter is completed
+- [ ] Corridor opens with a visible animation after tutorial encounter completes
+- [ ] Player sprite reflects gender and origin outfit variant from character creation
 - [ ] Outfit color visually distinct across palette options
-- [ ] WASD and arrow keys move player one tile at a time
+- [ ] Movement is instant on key press (no delay before first step)
 - [ ] Walk animation toggles between 2 frames during movement
 - [ ] Player faces the correct direction when moving
 - [ ] Wall tiles block movement
-- [ ] 4 NPC trigger positions placed in Zone 1
 - [ ] Visual indicator when player is adjacent to a trigger
 - [ ] Input disabled when `GameStateMachine` is not in `PLAYING` state
 
@@ -69,24 +91,32 @@ Zone 1 (The Crossroads) as a fully navigable tile grid. Player sprite drawn prog
 
 ## Phase 3: Encounter System + Scoring Engine + Content Database
 
-**User stories**: 7, 8, 9, 10
+**User stories**: 7, 8, 9, 10, 50, 51, 52, 53
 **GitHub issue**: https://github.com/5till/mindblade/issues/4
 
 ### What to build
 
 Three tightly coupled systems: the dialogue box UI and `EncounterController` (option randomization, player selection, NPC reaction), the pure-function `ScoringEngine` (accumulate, normalize, overallRank, maxPossibleScores), and the `ContentDatabase` (all 28 encounter definitions). Zone 1's 4 encounters wired to their trigger tiles as the end-to-end proof. Option order randomized once per session.
 
+Encounter navigation: arrow keys highlight options (visual selection state), Space/Enter confirms. Number key shortcuts removed. NPC reactions support up to 3 lines of text; Space/Enter advances through each line, last press closes the box. No auto-close timer. Re-talking to a completed NPC reopens the encounter — old score delta is subtracted, new delta applied on re-selection.
+
 If implementation becomes unwieldy, the data entry for encounters 5–28 can be a sub-step after the Zone 1 mechanics are proven.
 
 ### Acceptance criteria
 
-- [ ] Dialogue box renders at bottom of screen with semi-transparent dark background
+- [ ] Bottom dialogue box renders with semi-transparent dark background
 - [ ] NPC dialogue displays in 1–3 lines
-- [ ] 4 response options display in randomized order
+- [ ] 4 response options display in randomized order with arrow key highlight state
+- [ ] Arrow keys (up/down) cycle through options; selected option visually highlighted
+- [ ] Space/Enter confirms selected option
+- [ ] Number key shortcuts (1–4) removed
 - [ ] Option order randomized once per session (stored for save/resume consistency)
-- [ ] Player selects option via keyboard; NPC reaction displays, then encounter resolves
+- [ ] NPC reaction text supports up to 3 lines; Space/Enter advances through each
+- [ ] No auto-close timer — reaction stays until player dismisses
 - [ ] Score delta from selected option accumulated correctly
-- [ ] Input disabled during `ENCOUNTER` state
+- [ ] Re-talking to a completed NPC reopens the encounter
+- [ ] On re-selection: old score delta subtracted, new delta applied
+- [ ] Input disabled during `ENCOUNTER` state (except encounter navigation keys)
 - [ ] All 28 encounters in `ContentDatabase` with correct dialogue, options, and score objects
 - [ ] `ScoringEngine.maxPossibleScores` constant correct for all 7 dimensions
 - [ ] `ScoringEngine.normalize()` maps raw scores to ranks 1–7 correctly
