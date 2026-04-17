@@ -6,38 +6,32 @@ YAKI-IRE PROGRESS LOG
 - 10 GitHub issues created (#2-#11) as vertical slice breakdown
 - Implementation plan written to ./plans/yaki-ire.md
 
-[Phase 1 — HTML Shell + Title Screen + Character Creation] COMPLETE
-- Single HTML file (index.html) created with inline CSS and JS
-- Google Fonts (Exo 2 + DM Sans) loaded via <link>
-- Canvas-based 60fps game loop via requestAnimationFrame
-- All 8 GameStateMachine states defined: TITLE, CHARACTER_CREATE, PLAYING,
-  ENCOUNTER, ZONE_TRANSITION, SUMMIT, RESULTS, POST_RESULTS
-- Title screen: animated starfield/torch background art, "YAKI-IRE" title,
-  subheading describing the term, blinking PRESS ANY KEY prompt
-- Continue hint shown when localStorage save detected
-- Character creation panel: gender (WARRIOR/WANDERER), name text input,
-  8-color outfit color picker with pixel swatches
-- Confirm button disabled until gender + name are both filled
-- Fade transition between all screens
-- Placeholder world canvas screen shown after character creation
-- FORMSPREE_URL and CALENDAR_URL placeholder constants at top of file
-- PersistenceManager, PlayerEntity, AudioManager (no-ops) scaffolded
+[Phase 1 — Character Creation Overhaul] NEEDS REVISION
+- DONE: title screen, game loop, state machine, basic char creation scaffold
+- MISSING per updated spec (see plans/yaki-ire.md Phase 1):
+  * Two unlabeled sprites side by side for gender selection (not WARRIOR/WANDERER buttons)
+  * 4 origin choices: The Exile, The Seeker, The Witness, The Warrior
+    - Each with a short hover description
+    - Each with a distinct outfit visual on the sprite
+  * Live sprite preview panel that updates in real time as gender/origin changes
+  * Confirm button requires gender + origin + name (currently only gender + name)
+  * PlayerEntity must store origin field and pass it to Renderer._drawPlayer
 
-
-[Phase 2 — Player Movement + Zone 1 World] COMPLETE
-- ZONE1_MAP: 20×15 tile grid (T.FLOOR, T.WALL, T.NPC tiles)
-- WorldMap module: getTile, isPassable, adjacentNPC
-- PlayerController: tryMove (140ms cooldown), tryInteract (logs, Phase 3 hook)
-- PlayerEntity: added facing (up/down/left/right), walkFrame (0/1), _positionSet
-- Renderer.drawWorld(): tiles, NPCs, trigger highlight, player sprite, zone HUD label
-- Renderer._drawTile(): walls with stone mortar detail, floor with grid lines
-- Renderer._drawNPC(): hooded figure with animated glowing cyan eyes, 4 unique colors
-- Renderer._drawPlayer(): gender variants (pauldrons vs skirt+hair), outfit color,
-  2-frame walk animation (leg offset), direction-aware eyes and arms
-- Renderer._drawTriggerHighlight(): pulsing border on NPC tile + "!" above player
-- InputController: WASD/arrows move player, Space/Enter calls tryInteract
-- Player start: (9,7) center of map; position saved/restored via PersistenceManager
-- Input disabled outside PLAYING state
+[Phase 2 — Zone 1 Tutorial + World Overhaul] NEEDS REVISION
+- DONE: tile grid, player movement, collision, NPC triggers, walk animation
+- MISSING per updated spec (see plans/yaki-ire.md Phase 2):
+  * Outdoor crossroads tile treatment (grass/sky, not stone dungeon)
+  * Player starts OUTSIDE a tutorial room (not in the center of the map)
+  * Zone 1 split into two rooms: tutorial room (1 NPC) + main room (3 NPCs)
+  * Corridor between rooms blocked until tutorial encounter completes
+  * Corridor opens with visible animation after tutorial encounter
+  * Floating tutorial prompt at top (top dialogue box): "WASD / ↑↓←→ to move"
+    - Fades after first step, never repeats
+  * Floating interact prompt at top: "SPACE / ENTER to interact"
+    - Appears when first adjacent to NPC, fades after first use, never repeats
+  * Movement is instant on key press (currently has 140ms cooldown — remove it)
+  * NPC trigger for tutorial room must map to encounter index 0 (Zone 1 encounter 1:
+    "Another traveler at the crossroads. Tell me — what brought you here?")
 
 
 [Phase 3 — Encounter System + Scoring Engine + Content Database] COMPLETE
@@ -98,4 +92,4 @@ YAKI-IRE PROGRESS LOG
   instead of hiding the highlight entirely
 - Initial option 0 is pre-highlighted when encounter opens
 
-NEXT TASK: Phase 4b — Full Playthrough Review [HITL] (GitHub issue #6)
+NEXT TASK: Phase 1 Character Creation Overhaul (implement NEEDS REVISION items above)
