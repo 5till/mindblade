@@ -1,0 +1,1731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mind Blade — Effectiveness Assessment</title>
+<meta name="description" content="Discover your effectiveness profile across 7 dimensions in 10 minutes. Get ranked on Agency, Clarity, Power, and more.">
+<link rel="icon" type="image/png" href="logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg-primary: #0a0a0f;
+  --bg-secondary: #0e0e16;
+  --bg-tertiary: #12121c;
+  --bg-card: #14141f;
+  --cyan: #4aeadc;
+  --cyan-dim: rgba(74, 234, 220, 0.15);
+  --cyan-glow: rgba(74, 234, 220, 0.08);
+  --cyan-strong: rgba(74, 234, 220, 0.25);
+  --text-primary: #e0e8ef;
+  --text-secondary: #9ca3af;
+  --text-muted: #6b7280;
+  --border: rgba(74, 234, 220, 0.1);
+  --font-heading: 'Exo 2', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg-primary);
+  color: var(--text-secondary);
+  line-height: 1.75;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='256' height='256' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+}
+
+/* ========== TOP BAR ========== */
+.top-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: rgba(10, 10, 15, 0.9);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+
+.top-bar-inner {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.top-bar-logo {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  opacity: 0.9;
+  transition: opacity 0.2s;
+}
+
+.top-bar-logo img {
+  height: 40px;
+  width: auto;
+  object-fit: contain;
+}
+
+.top-bar-logo:hover { opacity: 1; }
+
+.top-bar-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.info-btn {
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: var(--text-muted);
+  background: none;
+  border: 1px solid var(--border);
+  padding: 5px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 0.3px;
+}
+
+.info-btn:hover { color: var(--text-secondary); border-color: var(--cyan-dim); }
+
+/* ========== PROGRESS BAR ========== */
+.progress-section {
+  padding: 8px 0 0;
+}
+
+.progress-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.progress-track {
+  flex: 1;
+  height: 3px;
+  background: var(--bg-tertiary);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--cyan);
+  border-radius: 2px;
+  transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 0 8px rgba(74, 234, 220, 0.3);
+}
+
+.progress-text {
+  font-family: var(--font-heading);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+/* ========== MODAL ========== */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  z-index: 200;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.modal-overlay.open { display: flex; }
+
+.modal-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 32px;
+  max-width: 480px;
+  width: 100%;
+  position: relative;
+}
+
+.modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 20px;
+  cursor: pointer;
+  padding: 4px 8px;
+  line-height: 1;
+}
+
+.modal-close:hover { color: var(--text-primary); }
+
+.modal-title {
+  font-family: var(--font-heading);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+}
+
+.modal-box p {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  margin-bottom: 12px;
+}
+
+.modal-box p:last-child { margin-bottom: 0; }
+
+/* ========== CONTAINER ========== */
+.assessment-container {
+  width: 100%;
+  max-width: 640px;
+  min-height: 100vh;
+  padding: 80px 24px 40px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ========== PAGE ========== */
+.page {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  min-height: calc(100vh - 160px);
+}
+
+.page.active {
+  display: flex;
+  animation: fadeUp 0.35s ease;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ========== TYPOGRAPHY ========== */
+.page-label {
+  font-family: var(--font-heading);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--cyan);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.page-prompt {
+  font-family: var(--font-heading);
+  font-size: clamp(20px, 4vw, 26px);
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.4;
+  margin-bottom: 32px;
+  letter-spacing: 0.5px;
+}
+
+.page-subtext {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin-bottom: 24px;
+  font-style: italic;
+}
+
+/* ========== OPTION BUTTONS ========== */
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 32px;
+}
+
+.option-btn {
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.6;
+  text-align: left;
+  padding: 16px 20px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.option-btn:hover {
+  border-color: var(--cyan-dim);
+  background: rgba(74, 234, 220, 0.03);
+  color: var(--text-primary);
+}
+
+.option-btn.selected {
+  border-color: var(--cyan);
+  background: rgba(74, 234, 220, 0.06);
+  color: var(--text-primary);
+  box-shadow: 0 0 20px rgba(74, 234, 220, 0.06);
+}
+
+.option-btn.selected::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--cyan);
+  border-radius: 10px 0 0 10px;
+}
+
+/* ========== IMAGE RESONANCE ========== */
+.image-choices {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.image-choice {
+  border-radius: 12px;
+  border: 2px solid var(--border);
+  background: var(--bg-card);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.image-choice:hover {
+  border-color: var(--cyan-dim);
+  transform: translateY(-2px);
+}
+
+.image-choice.selected {
+  border-color: var(--cyan);
+  box-shadow: 0 0 24px rgba(74, 234, 220, 0.12);
+}
+
+.image-placeholder {
+  width: 100%;
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  gap: 16px;
+}
+
+.image-icon { font-size: 48px; line-height: 1; }
+.image-label {
+  font-family: var(--font-heading);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-align: center;
+  letter-spacing: 0.5px;
+}
+
+.image-choice.selected .image-label { color: var(--cyan); }
+
+/* ========== THIS OR THAT ========== */
+.tot-pairs {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 32px;
+}
+
+.tot-pair {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 0;
+  align-items: stretch;
+}
+
+.tot-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-heading);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-muted);
+  letter-spacing: 1px;
+  padding: 0 10px;
+  opacity: 0.5;
+}
+
+.tot-btn {
+  font-family: var(--font-body);
+  font-size: 14px;
+  text-align: center;
+  padding: 14px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  line-height: 1.4;
+}
+
+.tot-btn:hover { border-color: var(--cyan-dim); color: var(--text-primary); }
+
+.tot-btn.selected {
+  border-color: var(--cyan);
+  background: rgba(74, 234, 220, 0.06);
+  color: var(--text-primary);
+}
+
+/* ========== SLIDER ========== */
+.slider-wrap { margin-bottom: 32px; }
+
+.slider-anchors {
+  display: flex;
+  justify-content: space-between;
+  gap: 40px;
+  margin-bottom: 24px;
+}
+
+.slider-anchor {
+  flex: 1;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+
+.slider-anchor:last-child { text-align: right; }
+
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  background: linear-gradient(90deg, var(--bg-tertiary), rgba(74, 234, 220, 0.15));
+  border-radius: 3px;
+  outline: none;
+  cursor: pointer;
+  border: 1px solid rgba(74, 234, 220, 0.08);
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--cyan);
+  cursor: pointer;
+  box-shadow: 0 0 12px rgba(74, 234, 220, 0.4);
+  transition: box-shadow 0.2s;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  box-shadow: 0 0 24px rgba(74, 234, 220, 0.6);
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--cyan);
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 0 12px rgba(74, 234, 220, 0.4);
+}
+
+input[type="range"]::-moz-range-track {
+  height: 6px;
+  background: linear-gradient(90deg, var(--bg-tertiary), rgba(74, 234, 220, 0.15));
+  border-radius: 3px;
+  border: 1px solid rgba(74, 234, 220, 0.08);
+}
+
+.slider-value {
+  text-align: center;
+  margin-top: 16px;
+  font-family: var(--font-heading);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--cyan);
+}
+
+/* ========== SELECT ALL ========== */
+.select-all-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 32px;
+}
+
+.select-all-item {
+  font-family: var(--font-body);
+  font-size: 14px;
+  text-align: left;
+  padding: 12px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  line-height: 1.5;
+}
+
+.select-all-item:hover { border-color: var(--cyan-dim); }
+
+.select-all-item.selected {
+  border-color: var(--cyan);
+  background: rgba(74, 234, 220, 0.06);
+  color: var(--text-primary);
+}
+
+/* ========== TRUE / FALSE ========== */
+.tf-statement {
+  font-family: var(--font-heading);
+  font-size: clamp(18px, 3.5vw, 22px);
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.5;
+  margin-bottom: 28px;
+  padding: 24px;
+  border-left: 3px solid var(--cyan-dim);
+  background: var(--bg-card);
+  border-radius: 0 10px 10px 0;
+}
+
+.tf-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.tf-btn {
+  font-family: var(--font-heading);
+  font-size: 16px;
+  font-weight: 600;
+  text-align: center;
+  padding: 18px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  letter-spacing: 1px;
+}
+
+.tf-btn:hover { border-color: var(--cyan-dim); color: var(--text-primary); }
+
+.tf-btn.selected {
+  border-color: var(--cyan);
+  background: rgba(74, 234, 220, 0.06);
+  color: var(--cyan);
+}
+
+/* ========== NAV BUTTONS ========== */
+.nav-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.nav-row-right {
+  display: flex;
+  gap: 12px;
+}
+
+.next-btn {
+  font-family: var(--font-heading);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--bg-primary);
+  background: var(--cyan);
+  border: none;
+  padding: 12px 32px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  letter-spacing: 0.5px;
+}
+
+.next-btn:hover { opacity: 0.85; transform: translateY(-1px); }
+.next-btn:disabled { opacity: 0.3; cursor: not-allowed; transform: none; }
+
+.back-btn {
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--text-muted);
+  background: none;
+  border: none;
+  padding: 10px 4px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.back-btn:hover { color: var(--text-secondary); }
+
+/* ========== WELCOME ========== */
+.welcome-badge {
+  display: inline-block;
+  font-family: var(--font-heading);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--cyan);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 6px 14px;
+  border: 1px solid var(--cyan-dim);
+  border-radius: 20px;
+  margin-bottom: 24px;
+}
+
+.welcome-title {
+  font-family: var(--font-heading);
+  font-size: clamp(28px, 5vw, 38px);
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1.2;
+  margin-bottom: 20px;
+  letter-spacing: 1px;
+}
+
+.welcome-sub {
+  font-size: 16px;
+  color: var(--text-secondary);
+  line-height: 1.75;
+  margin-bottom: 16px;
+  max-width: 480px;
+}
+
+.welcome-meta {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 36px;
+  margin-top: 24px;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-heading);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.meta-icon { color: var(--cyan); font-size: 16px; }
+
+.start-btn {
+  font-family: var(--font-heading);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--bg-primary);
+  background: var(--cyan);
+  border: none;
+  padding: 16px 48px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  letter-spacing: 0.5px;
+  box-shadow: 0 0 30px rgba(74, 234, 220, 0.15);
+}
+
+.start-btn:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+  box-shadow: 0 0 40px rgba(74, 234, 220, 0.25);
+}
+
+/* ========== EMAIL ========== */
+.email-section { text-align: center; }
+
+.email-title {
+  font-family: var(--font-heading);
+  font-size: clamp(24px, 4vw, 32px);
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+}
+
+.email-sub {
+  font-size: 15px;
+  color: var(--text-secondary);
+  margin-bottom: 32px;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.email-input-wrap {
+  display: flex;
+  gap: 10px;
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+.email-input {
+  flex: 1;
+  font-family: var(--font-body);
+  font-size: 15px;
+  padding: 14px 18px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-primary);
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.email-input:focus { border-color: var(--cyan); }
+.email-input::placeholder { color: var(--text-muted); }
+
+.email-submit {
+  font-family: var(--font-heading);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--bg-primary);
+  background: var(--cyan);
+  border: none;
+  padding: 14px 28px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  white-space: nowrap;
+}
+
+.email-submit:hover { opacity: 0.85; }
+
+/* ========== RESULTS ========== */
+.results-section { padding-bottom: 60px; }
+
+.results-header { text-align: center; margin-bottom: 40px; }
+
+.results-title {
+  font-family: var(--font-heading);
+  font-size: clamp(24px, 4vw, 32px);
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.results-subtitle { font-size: 15px; color: var(--text-secondary); }
+
+.overall-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 32px;
+  text-align: center;
+  margin-bottom: 36px;
+  position: relative;
+  overflow: hidden;
+}
+
+.overall-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  right: -50%;
+  height: 200%;
+  background: radial-gradient(ellipse at 50% 100%, rgba(74, 234, 220, 0.04) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.overall-label {
+  font-family: var(--font-heading);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  position: relative;
+}
+
+.overall-rank-num {
+  font-family: var(--font-heading);
+  font-size: 56px;
+  font-weight: 800;
+  color: var(--cyan);
+  line-height: 1;
+  margin-bottom: 4px;
+  position: relative;
+  text-shadow: 0 0 30px rgba(74, 234, 220, 0.3);
+}
+
+.overall-rank-label {
+  font-family: var(--font-heading);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: 1px;
+  margin-bottom: 16px;
+  position: relative;
+}
+
+.overall-bar {
+  width: 100%;
+  height: 4px;
+  background: var(--bg-tertiary);
+  border-radius: 2px;
+  margin-bottom: 8px;
+  position: relative;
+}
+
+.overall-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--cyan), rgba(74, 234, 220, 0.5));
+  border-radius: 2px;
+  transition: width 1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.overall-bar-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: var(--text-muted);
+  font-family: var(--font-heading);
+  letter-spacing: 0.5px;
+  position: relative;
+}
+
+.dim-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.dim-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px 24px;
+}
+
+.dim-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.dim-name {
+  font-family: var(--font-heading);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.dim-rank-badge {
+  font-family: var(--font-heading);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--cyan);
+  padding: 4px 12px;
+  border: 1px solid var(--cyan-dim);
+  border-radius: 16px;
+}
+
+.dim-bar {
+  width: 100%;
+  height: 3px;
+  background: var(--bg-tertiary);
+  border-radius: 2px;
+  margin-bottom: 10px;
+}
+
+.dim-bar-fill {
+  height: 100%;
+  background: var(--cyan);
+  border-radius: 2px;
+  transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dim-desc { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+
+.callout-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.callout-card {
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+}
+
+.callout-label {
+  font-family: var(--font-heading);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.callout-label.strength { color: var(--cyan); }
+.callout-label.growth { color: #f59e0b; }
+
+.callout-dim {
+  font-family: var(--font-heading);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.callout-rank { font-size: 13px; color: var(--text-muted); }
+
+.results-cta {
+  text-align: center;
+  padding: 32px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+}
+
+.results-cta p {
+  font-size: 15px;
+  color: var(--text-secondary);
+  margin-bottom: 20px;
+  line-height: 1.7;
+}
+
+.results-cta-btn {
+  display: inline-block;
+  font-family: var(--font-heading);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--bg-primary);
+  background: var(--cyan);
+  padding: 12px 32px;
+  border-radius: 8px;
+  text-decoration: none;
+  cursor: pointer;
+  border: none;
+  transition: opacity 0.2s;
+}
+
+.results-cta-btn:hover { opacity: 0.85; }
+
+/* Post-results actions */
+.results-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 36px;
+}
+
+.results-action-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  transition: border-color 0.3s;
+}
+
+.results-action-card:hover { border-color: var(--cyan-dim); }
+
+.results-action-title {
+  font-family: var(--font-heading);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.results-action-desc {
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+
+.results-action-btn {
+  font-family: var(--font-heading);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--bg-primary);
+  background: var(--cyan);
+  border: none;
+  padding: 10px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  letter-spacing: 0.3px;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.results-action-btn:hover { opacity: 0.85; }
+
+.results-action-btn.secondary {
+  background: transparent;
+  color: var(--cyan);
+  border: 1px solid var(--cyan-dim);
+}
+
+.results-action-btn.secondary:hover { border-color: var(--cyan); }
+
+.results-action-btn.muted {
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+}
+
+.results-action-btn.muted:hover { color: var(--text-secondary); border-color: var(--cyan-dim); }
+
+.save-input-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.save-input-row .email-input {
+  flex: 1;
+  font-size: 14px;
+  padding: 10px 14px;
+}
+
+.save-confirm {
+  font-size: 14px;
+  color: var(--cyan);
+  margin-top: 12px;
+  display: none;
+}
+
+.email-consent {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 8px;
+  line-height: 1.5;
+}
+
+/* ========== FOOTER ========== */
+.assessment-footer {
+  text-align: center;
+  padding: 24px;
+  font-size: 11px;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+  border-top: 1px solid var(--border);
+  margin-top: 40px;
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 480px) {
+  .assessment-container { padding: 72px 16px 32px; }
+  .image-choices { gap: 10px; }
+  .image-placeholder { padding: 16px; }
+  .image-icon { font-size: 36px; }
+  .email-input-wrap { flex-direction: column; }
+  .callout-grid { grid-template-columns: 1fr; }
+  .welcome-meta { flex-direction: column; gap: 12px; }
+  .slider-anchors { gap: 20px; }
+  .tot-btn { font-size: 13px; padding: 12px 8px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Top Bar with Logo + Instructions -->
+<div class="top-bar">
+  <div class="top-bar-inner">
+    <a href="index.html" class="top-bar-logo"><img src="logo.png" alt="Mind Blade"></a>
+    <div class="top-bar-right">
+      <button class="info-btn" onclick="toggleModal()">Instructions</button>
+    </div>
+  </div>
+</div>
+
+<!-- Instructions Modal -->
+<div class="modal-overlay" id="modal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="toggleModal()">&times;</button>
+    <div class="modal-title">How This Works</div>
+    <p>This assessment measures 7 dimensions of personal effectiveness through 28 questions. It takes about 10 minutes.</p>
+    <p>You'll encounter different question types — image selections, quick-tap pairs, scenarios, sliders, and more. There are no right or wrong answers. Answer based on how you actually are, not how you want to be.</p>
+    <p>At the end, you'll receive a rank (1-7) for each dimension and an overall effectiveness profile. Enter your email to access your results.</p>
+    <p>Your responses are confidential and used only to generate your profile.</p>
+  </div>
+</div>
+
+<div class="assessment-container">
+  <div id="pageContainer"></div>
+  <div class="assessment-footer">&copy; 2026 Mind Blade. All rights reserved.</div>
+</div>
+
+<script>
+// ===== CONFIGURATION =====
+// Replace with your Google Apps Script Web App URL after deploying:
+const SHEETS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbzFBAJHUuVEnaMVAdgMi9dEQPeyRhB7KRgkr5nVTM59blV0DwjmwbLThAuwy8yZQZAZ1Q/exec';
+const CALENDAR_URL = 'https://calendar.app.google/VumPzQsmfUUJPS917';
+
+const DIMENSIONS = {
+  agency: 'Agency', clarity: 'Clarity', discernment: 'Discernment',
+  validation: 'Validation', value: 'Value', security: 'Security', power: 'Power'
+};
+
+const RANK_LABELS = ['','Reactive','Guarded','Developing','Emerging','Practicing','Established','Sovereign'];
+
+const RANK_DESCRIPTIONS = {
+  agency: ['','You experience most of life as something happening to you. Your stories end with what was done to you, not what you did about it.','You recognize patterns of passivity but default to external explanations under pressure.','You can see when you\'re assigning blame externally. Awareness is growing but hasn\'t become your default.','You actively catch yourself and reframe. Agency language is becoming more natural but still requires effort.','You default to ownership in most situations. You initiate regularly and frame setbacks as information.','Agency is your operating system. You naturally author your experiences and others notice your self-direction.','Full ownership is effortless. You design your responses, initiate constantly, and frame every situation around what you can do.'],
+  clarity: ['','Events and your feelings about them are fused. You describe situations through emotional interpretation rather than observation.','You sense there\'s a difference between what happened and your story about it, but separating them feels forced.','You can separate facts from interpretation when you slow down. Under stress, they still blend.','You reliably distinguish between events, emotions, and assumptions. Your own role is becoming visible.','You naturally process situations in layers — what happened, what you felt, what you assumed, what you contributed.','Accurate perception is your default. Problems get solved at the root because you see them clearly.','Your perception is precise and undistorted. You see situations exactly as they are, including your own contribution, without effort.'],
+  discernment: ['','You react to the surface of situations. Consequences frequently surprise you.','You ask basic questions about what happened but rarely probe for underlying dynamics.','You\'re beginning to ask why things happen, not just what happened. Pattern recognition is developing.','You can identify motivations and underlying dynamics in many situations.','You regularly anticipate consequences before acting. You see patterns across situations.','You operate with foresight. Second-order effects are visible to you and your prediction accuracy is high.','You see multiple layers deep effortlessly. You anticipate consequences others miss and plan across long time horizons.'],
+  validation: ['','You cannot proceed on most decisions without external confirmation. Your own judgment doesn\'t feel sufficient.','You form preliminary views but routinely abandon them when others disagree.','You can act independently on smaller decisions but seek reassurance for high-stakes ones.','You trust your own assessment in most situations but still feel more confident with external confirmation.','You evaluate against your own criteria and act on your judgment. Others\' input is data, not permission.','Your self-assessment is stable and reliable. You welcome feedback without needing it to proceed.','You are your own authority. You assess, decide, and act from internal criteria with complete confidence.'],
+  value: ['','Your sense of worth is almost entirely dependent on others\' reactions. Criticism devastates; praise inflates.','Your effort and mood visibly track with external recognition. Without acknowledgment, motivation fades.','You maintain effort in some areas without recognition but still feel the pull of external validation.','Your self-worth is stabilizing. External reactions affect you but don\'t derail your effort.','You produce consistently regardless of recognition. Your sense of value is anchored to evidence you can see.','External reactions rarely shift your self-assessment. You know what you bring and don\'t need confirmation.','Your worth is entirely self-evident to you. Praise and criticism are information, not determinants of how you feel about yourself.'],
+  security: ['','Uncertainty paralyzes you. You avoid decisions and actions when you can\'t predict the outcome.','You over-research and over-prepare as substitutes for acting. The goal is to eliminate uncertainty before engaging.','You can tolerate uncertainty in familiar domains but freeze in genuinely novel situations.','You\'re beginning to act despite uncertainty, drawing on evidence that you\'ve handled unknowns before.','You engage with uncertain situations regularly. Each outcome adds to your evidence base.','Uncertainty is information, not a threat. You act, adjust, and learn with composure.','You move fluidly in the unknown. Your security comes from accumulated evidence of your own adaptability.'],
+  power: ['','Most of your interpersonal energy goes to controlling or changing others. Conflict is frequent.','You default to trying to get others to see things your way. Frustration or escalation follows when they don\'t.','You\'re becoming aware of how much energy goes toward managing others. You can redirect sometimes.','You actively choose self-adjustment over control attempts in many situations. Conflicts are decreasing.','You default to directing your own response rather than controlling others. Collaboration comes naturally.','Your influence operates through your own behavior, not through pressure on others. People seek you out.','You have full command of your own responses. Your presence reduces friction and creates productive environments effortlessly.']
+};
+
+// QUESTIONS — redistributed: scenarios spread throughout, pairs reversed on some
+const QUESTIONS = [
+  // 1. Image resonance
+  { type:'image', label:'PERCEPTION', prompt:'Which feels more like your day-to-day experience?',
+    options:[{iconA:'🧭',labelA:'Navigating with direction',iconB:'🌊',labelB:'Carried by the current'}],
+    scores:{A:{agency:3,security:2},B:{agency:1,security:1}} },
+  // 2. Image resonance
+  { type:'image', label:'PERCEPTION', prompt:'Which feels more like how you see problems?',
+    options:[{iconA:'🌫️',labelA:'Shapes in fog — blurred together',iconB:'🔬',labelB:'Distinct parts — clearly separated'}],
+    scores:{A:{clarity:1},B:{clarity:3}} },
+  // 3. Image resonance
+  { type:'image', label:'PERCEPTION', prompt:"Which feels more like your relationship to other people's opinions?",
+    options:[{iconA:'🌳',labelA:'Rooted — wind blows, I hold',iconB:'🚩',labelB:'Responsive — I move with the wind'}],
+    scores:{A:{validation:3,value:3},B:{validation:1,value:1}} },
+  // 4. Scenario (distributed early)
+  { type:'choice', label:'SCENARIO', prompt:"You've been working on something for weeks. You show it to someone you respect and they're unimpressed. What happens next?",
+    options:[
+      {text:"I feel deflated and start questioning whether the whole thing is worth continuing",scores:{value:1,validation:1,security:1}},
+      {text:"I get frustrated — they clearly don't understand what I'm trying to do",scores:{power:1,clarity:1,value:2}},
+      {text:"I feel disappointed but review their reaction for any useful signal",scores:{value:3,clarity:3}},
+      {text:"I assess my work against my own criteria to determine if their response changes my evaluation",scores:{value:4,validation:4,clarity:3}}
+    ]},
+  // 5. This or that — some pairs reversed
+  { type:'thisorthat', label:'QUICK READ', prompt:'For each pair, tap the one that\'s more like you.',
+    pairs:[
+      {left:'I design my days',right:'My days happen to me',scores:{left:{agency:2},right:{agency:0}}},
+      {left:'I push others to adjust',right:'I adjust my approach',scores:{left:{power:0},right:{power:2}}},
+      {left:"I'll figure it out as I go",right:'I need to know first',scores:{left:{security:2},right:{security:0}}},
+      {left:'I check with someone',right:'I trust my own read',scores:{left:{validation:0},right:{validation:2}}},
+      {left:'I start things',right:'I wait for things to start',scores:{left:{agency:2},right:{agency:0}}}
+    ]},
+  // 6. Scenario
+  { type:'choice', label:'SCENARIO', prompt:"A friend keeps complaining about the same problem every time you see them. They never take action. You find yourself thinking...",
+    options:[
+      {text:"I relate — I have problems like that too where nothing seems to change",scores:{clarity:1,discernment:1}},
+      {text:"It's frustrating — they should just do something about it already",scores:{power:1,discernment:1}},
+      {text:"I wonder what's making it hard for them to act on this",scores:{discernment:3,clarity:2}},
+      {text:"I notice the pattern and wonder if I have any version of this in my own life",scores:{discernment:4,clarity:4}}
+    ]},
+  // 7. This or that — some pairs reversed
+  { type:'thisorthat', label:'QUICK READ', prompt:'For each pair, tap the one that\'s more like you.',
+    pairs:[
+      {left:'Recognition fuels my effort',right:'I produce the same whether anyone notices or not',scores:{left:{value:0},right:{value:2}}},
+      {left:'What happened and how I feel are separate things',right:'What happened is how I feel about it',scores:{left:{clarity:2},right:{clarity:0}}},
+      {left:'I deal with what\'s in front of me',right:'I look for what\'s underneath',scores:{left:{discernment:0},right:{discernment:2}}},
+      {left:'I can be wrong and feel fine',right:'Being wrong is hard to sit with',scores:{left:{validation:2,security:1},right:{validation:0,security:0}}},
+      {left:'My problems are mostly the same ones',right:'My problems are mostly new ones',scores:{left:{clarity:0},right:{clarity:2}}}
+    ]},
+  // 8. Sentence completion
+  { type:'choice', label:'REFLECTION', prompt:'When I think about the problems in my life right now, I see...',
+    options:[
+      {text:"Situations caused by other people that I'm stuck dealing with",scores:{agency:1,clarity:1}},
+      {text:"Patterns I can feel but can't quite name or solve",scores:{agency:2,clarity:2,discernment:1}},
+      {text:"Challenges I'm actively working through",scores:{agency:3,clarity:3}},
+      {text:"Opportunities to learn something I haven't figured out yet",scores:{agency:4,discernment:3}}
+    ]},
+  // 9. Sentence completion
+  { type:'choice', label:'REFLECTION', prompt:'When someone criticizes my work, the first thing I do internally is...',
+    options:[
+      {text:"Question whether I'm actually good at this",scores:{value:1,validation:1}},
+      {text:"Build a case for why they're wrong",scores:{power:1,clarity:1}},
+      {text:"Evaluate whether their specific point has merit",scores:{value:3,validation:3}},
+      {text:"Separate the content of their feedback from how they delivered it",scores:{clarity:4,value:3}}
+    ]},
+  // 10. Scenario
+  { type:'choice', label:'SCENARIO', prompt:"You're offered an opportunity that could be great but involves real uncertainty. Your first instinct is to...",
+    options:[
+      {text:"Decline — if I can't see how it ends, I'd rather not risk it",scores:{security:1,agency:1}},
+      {text:"Research extensively before deciding — I need more information",scores:{security:2,agency:2}},
+      {text:"Feel nervous but lean toward trying it",scores:{security:3,agency:3}},
+      {text:"Accept and start figuring out my approach — I'll learn from whatever happens",scores:{security:4,agency:4}}
+    ]},
+  // 11. Slider
+  { type:'slider', label:'SPECTRUM', prompt:'Where do you fall?',
+    leftAnchor:'My sense of self-worth changes significantly based on how people respond to me.',
+    rightAnchor:'My sense of self-worth stays stable regardless of how people respond to me.',
+    dimension:'value' },
+  // 12. Slider
+  { type:'slider', label:'SPECTRUM', prompt:'Where do you fall?',
+    leftAnchor:'I need to know how something will turn out before I commit to it.',
+    rightAnchor:'I commit and handle whatever the outcome is.',
+    dimension:'security' },
+  // 13. Scenario
+  { type:'choice', label:'SCENARIO', prompt:"You're in a disagreement with someone. You believe you're right. They're not budging. You...",
+    options:[
+      {text:"Keep pushing until they see it my way — the reasoning is clear",scores:{power:1,validation:1}},
+      {text:"Get frustrated and disengage — there's no point if they won't listen",scores:{power:1,agency:1}},
+      {text:"Make my case clearly, then accept that they might not agree",scores:{power:3,agency:3}},
+      {text:"Get curious about what they're seeing that I'm not — then decide if my position needs updating",scores:{power:4,discernment:4,clarity:3}}
+    ]},
+  // 14. Slider
+  { type:'slider', label:'SPECTRUM', prompt:'Where do you fall?',
+    leftAnchor:'When something goes wrong, I focus on who or what caused it.',
+    rightAnchor:'When something goes wrong, I focus on what I\'ll do about it.',
+    dimensions:{primary:'agency',secondary:'power'} },
+  // 15. Slider
+  { type:'slider', label:'SPECTRUM', prompt:'Where do you fall?',
+    leftAnchor:'I usually deal with what\'s obvious and immediate.',
+    rightAnchor:'I usually look for what\'s hidden and long-term.',
+    dimension:'discernment' },
+  // 16. Sentence completion
+  { type:'choice', label:'REFLECTION', prompt:'When I tell a friend about a difficult situation, my story usually focuses on...',
+    options:[
+      {text:"What the other person did and why it was wrong",scores:{agency:1,clarity:1,power:1}},
+      {text:"How the situation made me feel",scores:{agency:2,clarity:2}},
+      {text:"What I'm thinking about doing next",scores:{agency:3,power:3}},
+      {text:"What I learned about myself from the situation",scores:{agency:4,discernment:3,clarity:3}}
+    ]},
+  // 17. Sentence completion
+  { type:'choice', label:'REFLECTION', prompt:'When I imagine my life a year from now, I see...',
+    options:[
+      {text:"More of the same — I don't feel like much will change",scores:{agency:1,security:1}},
+      {text:"Uncertainty — I hope things improve but I can't see how",scores:{security:1,agency:2}},
+      {text:"A direction I'm working toward, though I'm not sure I'll get there",scores:{agency:3,security:2}},
+      {text:"A set of specific things I'm building toward and actively designing",scores:{agency:4,security:4,discernment:2}}
+    ]},
+  // 18. Scenario
+  { type:'choice', label:'SCENARIO', prompt:"You realize that a recurring problem in your life might actually be connected to something you're doing. Your reaction is...",
+    options:[
+      {text:"That feels unfair — I've been dealing with enough already",scores:{agency:1,clarity:1}},
+      {text:"I can see it intellectually but it's hard to actually accept",scores:{agency:2,clarity:2}},
+      {text:"That's uncomfortable but useful — I want to understand what I'm doing",scores:{agency:3,clarity:3,discernment:2}},
+      {text:"That's exciting — if it's something I'm doing, that means I can change it",scores:{agency:4,clarity:4,security:3}}
+    ]},
+  // 19. Select all
+  { type:'selectall', label:'BEHAVIOR CHECK', prompt:'Which of these have you done in the past 7 days? Select all that apply.',
+    subtext:'Select as many as apply.',
+    items:[
+      {text:'Exercised or trained physically',cat:'enhance'},
+      {text:'Scrolled social media for 30+ min without a purpose',cat:'cope'},
+      {text:'Spent focused time studying or learning something',cat:'enhance'},
+      {text:'Binge-watched content you didn\'t actively choose',cat:'cope'},
+      {text:'Had a genuinely engaging conversation',cat:'enhance'},
+      {text:'Ate or drank to manage stress or boredom',cat:'cope'},
+      {text:'Practiced a skill deliberately',cat:'enhance'},
+      {text:'Spent significant time complaining about a situation',cat:'cope'},
+      {text:'Planned or designed something with intention',cat:'enhance'},
+      {text:'Consumed self-help content without applying any of it',cat:'cope'},
+      {text:'Meditated or did a mindfulness practice',cat:'enhance'},
+      {text:'Shopped or browsed products without intending to buy',cat:'cope'}
+    ]},
+  // 20. Select all
+  { type:'selectall', label:'BEHAVIOR CHECK', prompt:'Which of these feel true for you right now? Select all that apply.',
+    subtext:'Select as many as apply.',
+    items:[
+      {text:'I have a clear project or goal I\'m actively working toward',cat:'agency'},
+      {text:'I\'m waiting for something to change before I can move forward',cat:'stuck'},
+      {text:'I recently started something without anyone asking me to',cat:'agency'},
+      {text:'I feel like most of my problems are caused by others or circumstances',cat:'stuck'},
+      {text:'I know what my next step is on something important to me',cat:'agency'},
+      {text:'I have ideas but I haven\'t started on any of them',cat:'stuck'},
+      {text:'I\'ve adjusted my approach after something didn\'t work',cat:'agency'},
+      {text:'I\'ve been meaning to do something important but keep not doing it',cat:'stuck'}
+    ]},
+  // 21. Scenario
+  { type:'choice', label:'SCENARIO', prompt:"You just made a decision that didn't work out. Looking back, you think...",
+    options:[
+      {text:"I should have asked more people before deciding",scores:{validation:1,security:1}},
+      {text:"The outcome was unfair — I made the right call and it should have worked",scores:{clarity:1,agency:1}},
+      {text:"I made the best decision I could with what I knew — I'd adjust next time",scores:{agency:3,security:3}},
+      {text:"I should have anticipated that outcome — what did I miss?",scores:{discernment:4,agency:3,clarity:3}}
+    ]},
+  // 22-26. True/False
+  { type:'truefalse', label:'COMMITMENT', statement:'I can assess the quality of my own work without needing anyone else\'s reaction to it.',
+    scores:{true:{validation:3},false:{validation:0}} },
+  { type:'truefalse', label:'COMMITMENT', statement:'Most of my interpersonal conflicts are caused by the other person, not me.',
+    scores:{true:{clarity:0,power:0,agency:0},false:{clarity:2,power:2,agency:2}} },
+  { type:'truefalse', label:'COMMITMENT', statement:'I perform at the same level whether or not someone is watching or will see the results.',
+    scores:{true:{value:3},false:{value:0}} },
+  { type:'truefalse', label:'COMMITMENT', statement:'When something unexpected happens, my first thought is usually about what I can do — not about why it shouldn\'t have happened.',
+    scores:{true:{agency:3,security:2},false:{agency:0,security:0}} },
+  { type:'truefalse', label:'COMMITMENT', statement:'I can usually predict the second-order effects of my decisions before I make them.',
+    scores:{true:{discernment:3},false:{discernment:0}} },
+  // 27-28. Final sliders
+  { type:'slider', label:'FINAL', prompt:'Overall — how much of your life feels intentionally designed by you?',
+    leftAnchor:'Almost entirely shaped by external circumstances',
+    rightAnchor:'Almost entirely designed by me',
+    dimension:'agency' },
+  { type:'slider', label:'FINAL', prompt:'When you look at the gap between where you are and where you want to be...',
+    leftAnchor:'I can feel something is in the way but I can\'t see what it is',
+    rightAnchor:'I can see exactly what\'s in the way and what to do about it',
+    dimensions:{primary:'clarity',secondary:'discernment'} }
+];
+
+// ============================================================
+// STATE
+// ============================================================
+let currentPage = 0;
+const answers = {};
+const dimScores = {agency:0,clarity:0,discernment:0,validation:0,value:0,security:0,power:0};
+const dimMaxes = {agency:0,clarity:0,discernment:0,validation:0,value:0,security:0,power:0};
+const appliedScores = {};
+let advancing = false;
+
+function calcMaxScores() {
+  QUESTIONS.forEach(q => {
+    if (q.type==='choice') {
+      const mx={};
+      q.options.forEach(o=>Object.entries(o.scores).forEach(([d,v])=>{mx[d]=Math.max(mx[d]||0,v)}));
+      Object.entries(mx).forEach(([d,v])=>dimMaxes[d]+=v);
+    } else if (q.type==='image') {
+      const mx={};
+      Object.values(q.scores).forEach(s=>Object.entries(s).forEach(([d,v])=>{mx[d]=Math.max(mx[d]||0,v)}));
+      Object.entries(mx).forEach(([d,v])=>dimMaxes[d]+=v);
+    } else if (q.type==='thisorthat') {
+      q.pairs.forEach(p=>{
+        const mx={};
+        [p.scores.left,p.scores.right].forEach(s=>Object.entries(s).forEach(([d,v])=>{mx[d]=Math.max(mx[d]||0,v)}));
+        Object.entries(mx).forEach(([d,v])=>dimMaxes[d]+=v);
+      });
+    } else if (q.type==='slider') {
+      if(q.dimension) dimMaxes[q.dimension]+=10;
+      else if(q.dimensions){dimMaxes[q.dimensions.primary]+=10;dimMaxes[q.dimensions.secondary]+=5;}
+    } else if (q.type==='truefalse') {
+      const mx={};
+      Object.values(q.scores).forEach(s=>Object.entries(s).forEach(([d,v])=>{mx[d]=Math.max(mx[d]||0,v)}));
+      Object.entries(mx).forEach(([d,v])=>dimMaxes[d]+=v);
+    } else if (q.type==='selectall') {
+      if(q.items[0].cat==='enhance'||q.items[0].cat==='cope'){dimMaxes.agency+=4;dimMaxes.clarity+=2;}
+      else{dimMaxes.agency+=8;dimMaxes.security+=4;dimMaxes.power+=2;}
+    }
+  });
+}
+calcMaxScores();
+
+// ============================================================
+// SCORING
+// ============================================================
+function applyScores(key, scoreObj) {
+  if(appliedScores[key]) Object.entries(appliedScores[key]).forEach(([d,v])=>dimScores[d]-=v);
+  appliedScores[key]=scoreObj;
+  Object.entries(scoreObj).forEach(([d,v])=>dimScores[d]+=v);
+}
+
+function calculateScores() {
+  Object.keys(dimScores).forEach(k=>dimScores[k]=0);
+  Object.keys(appliedScores).forEach(k=>delete appliedScores[k]);
+  QUESTIONS.forEach((q,idx)=>{
+    const a=answers[idx]; if(a==null) return;
+    if(q.type==='image') applyScores(idx,q.scores[a]);
+    else if(q.type==='choice') applyScores(idx,q.options[a].scores);
+    else if(q.type==='thisorthat') Object.entries(a).forEach(([pi,side])=>applyScores(idx+'-'+pi,q.pairs[pi].scores[side]));
+    else if(q.type==='slider'){
+      if(q.dimension) applyScores(idx,{[q.dimension]:a});
+      else if(q.dimensions) applyScores(idx,{[q.dimensions.primary]:a,[q.dimensions.secondary]:Math.round(a/2)});
+    } else if(q.type==='truefalse') applyScores(idx,q.scores[a?'true':'false']);
+    else if(q.type==='selectall'){
+      const sel=a||{};
+      if(q.items[0].cat==='enhance'||q.items[0].cat==='cope'){
+        let en=0,co=0;
+        q.items.forEach((it,ii)=>{if(sel[ii]){if(it.cat==='enhance')en++;else co++;}});
+        const r=en/Math.max(1,en+co);
+        applyScores(idx,{agency:Math.round(r*4),clarity:Math.round(r*2)});
+      } else {
+        let ag=0,st=0;
+        q.items.forEach((it,ii)=>{if(sel[ii]){if(it.cat==='agency')ag++;else st++;}});
+        const r=ag/Math.max(1,ag+st);
+        applyScores(idx,{agency:Math.round(r*8),security:Math.round(r*4),power:Math.round(r*2)});
+      }
+    }
+  });
+}
+
+// ============================================================
+// AUTO-ADVANCE (for single-select types)
+// ============================================================
+function autoAdvance() {
+  if(advancing) return;
+  advancing = true;
+  setTimeout(()=>{ advancing=false; nextPage(); }, 400);
+}
+
+// ============================================================
+// RENDER
+// ============================================================
+const container = document.getElementById('pageContainer');
+
+function render() {
+  container.innerHTML = '';
+  if(currentPage===0) renderWelcome();
+  else if(currentPage<=QUESTIONS.length) renderQuestion(currentPage-1);
+  else renderResults();
+
+  // Update progress in top bar
+  const topRight = document.querySelector('.top-bar-right');
+  if(currentPage>0 && currentPage<=QUESTIONS.length) {
+    const pct = (currentPage/QUESTIONS.length)*100;
+    let progEl = document.getElementById('progressSection');
+    if(!progEl) {
+      progEl = document.createElement('div');
+      progEl.id = 'progressSection';
+      progEl.className = 'progress-section';
+      progEl.innerHTML = `<div class="progress-row"><div class="progress-track"><div class="progress-fill" id="progressFill"></div></div><div class="progress-text" id="progressText"></div></div>`;
+      topRight.parentElement.appendChild(progEl);
+    }
+    document.getElementById('progressFill').style.width = pct+'%';
+    document.getElementById('progressText').textContent = currentPage+' / '+QUESTIONS.length;
+    progEl.style.display = 'block';
+  } else {
+    const progEl = document.getElementById('progressSection');
+    if(progEl) progEl.style.display = 'none';
+  }
+
+  window.scrollTo(0,0);
+}
+
+function createPage(id) {
+  const p = document.createElement('div');
+  p.className = 'page active';
+  p.id = 'page-'+id;
+  container.appendChild(p);
+  return p;
+}
+
+// --- Welcome ---
+function renderWelcome() {
+  const p = createPage('welcome');
+  p.innerHTML = `
+    <div class="welcome-badge">EFFECTIVENESS ASSESSMENT</div>
+    <div class="welcome-title">Discover what's driving<br>your results.</div>
+    <p class="welcome-sub">This assessment ranks you across 7 dimensions of personal effectiveness — revealing the patterns shaping your decisions, your effort, and your outcomes.</p>
+    <p class="welcome-sub">Answer honestly. There are no right or wrong answers — only accurate ones.</p>
+    <div class="welcome-meta">
+      <div class="meta-item"><span class="meta-icon">◷</span> 10 minutes</div>
+      <div class="meta-item"><span class="meta-icon">◆</span> 28 questions</div>
+      <div class="meta-item"><span class="meta-icon">◎</span> 7 dimensions</div>
+    </div>
+    <button class="start-btn" onclick="nextPage()">Begin Assessment</button>`;
+}
+
+// --- Question Router ---
+function renderQuestion(idx) {
+  const q = QUESTIONS[idx];
+  if(q.type==='image') renderImageQ(idx,q);
+  else if(q.type==='thisorthat') renderTOTQ(idx,q);
+  else if(q.type==='choice') renderChoiceQ(idx,q);
+  else if(q.type==='slider') renderSliderQ(idx,q);
+  else if(q.type==='selectall') renderSelectAllQ(idx,q);
+  else if(q.type==='truefalse') renderTFQ(idx,q);
+}
+
+// --- Image ---
+function renderImageQ(idx,q) {
+  const p=createPage(idx); const opt=q.options[0]; const sel=answers[idx];
+  p.innerHTML = `
+    <div class="page-label">${q.label}</div>
+    <div class="page-prompt">${q.prompt}</div>
+    <div class="image-choices">
+      <div class="image-choice ${sel==='A'?'selected':''}" onclick="selectImage(${idx},'A',this)">
+        <div class="image-placeholder"><div class="image-icon">${opt.iconA}</div><div class="image-label">${opt.labelA}</div></div>
+      </div>
+      <div class="image-choice ${sel==='B'?'selected':''}" onclick="selectImage(${idx},'B',this)">
+        <div class="image-placeholder"><div class="image-icon">${opt.iconB}</div><div class="image-label">${opt.labelB}</div></div>
+      </div>
+    </div>
+    <div class="nav-row"><div>${currentPage>1?'<button class="back-btn" onclick="prevPage()">← Back</button>':''}</div><div></div></div>`;
+}
+
+function selectImage(idx,choice,el) {
+  answers[idx]=choice;
+  applyScores(idx,QUESTIONS[idx].scores[choice]);
+  el.parentElement.querySelectorAll('.image-choice').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+  autoAdvance();
+}
+
+// --- This or That ---
+function renderTOTQ(idx,q) {
+  const p=createPage(idx); const sels=answers[idx]||{};
+  const allDone=Object.keys(sels).length===q.pairs.length;
+  let html=q.pairs.map((pair,pi)=>`
+    <div class="tot-pair">
+      <div class="tot-btn ${sels[pi]==='left'?'selected':''}" onclick="selectTOT(${idx},${pi},'left',this)">${pair.left}</div>
+      <div class="tot-divider">or</div>
+      <div class="tot-btn ${sels[pi]==='right'?'selected':''}" onclick="selectTOT(${idx},${pi},'right',this)">${pair.right}</div>
+    </div>`).join('');
+  p.innerHTML = `
+    <div class="page-label">${q.label}</div>
+    <div class="page-prompt">${q.prompt}</div>
+    <div class="tot-pairs">${html}</div>
+    <div class="nav-row"><div>${currentPage>1?'<button class="back-btn" onclick="prevPage()">← Back</button>':''}</div>
+    <div><button class="next-btn" id="totNext" onclick="nextPage()" ${allDone?'':'disabled'}>Continue</button></div></div>`;
+}
+
+function selectTOT(idx,pi,side,el) {
+  if(!answers[idx]) answers[idx]={};
+  answers[idx][pi]=side;
+  const pair=el.closest('.tot-pair');
+  pair.querySelectorAll('.tot-btn').forEach(b=>b.classList.remove('selected'));
+  el.classList.add('selected');
+  applyScores(idx+'-'+pi,QUESTIONS[idx].pairs[pi].scores[side]);
+  const q=QUESTIONS[idx];
+  const allDone=Object.keys(answers[idx]).length===q.pairs.length;
+  const btn=document.getElementById('totNext');
+  if(btn) btn.disabled=!allDone;
+}
+
+// --- Choice ---
+function renderChoiceQ(idx,q) {
+  const p=createPage(idx); const sel=answers[idx];
+  let html=q.options.map((o,oi)=>`
+    <div class="option-btn ${sel===oi?'selected':''}" onclick="selectChoice(${idx},${oi},this)">${o.text}</div>`).join('');
+  p.innerHTML = `
+    <div class="page-label">${q.label}</div>
+    <div class="page-prompt">${q.prompt}</div>
+    <div class="options">${html}</div>
+    <div class="nav-row"><div>${currentPage>1?'<button class="back-btn" onclick="prevPage()">← Back</button>':''}</div><div></div></div>`;
+}
+
+function selectChoice(idx,oi,el) {
+  answers[idx]=oi;
+  applyScores(idx,QUESTIONS[idx].options[oi].scores);
+  el.parentElement.querySelectorAll('.option-btn').forEach(b=>b.classList.remove('selected'));
+  el.classList.add('selected');
+  autoAdvance();
+}
+
+// --- Slider ---
+function renderSliderQ(idx,q) {
+  const p=createPage(idx);
+  const val=answers[idx]!=null?answers[idx]:5;
+  if(answers[idx]==null) answers[idx]=5;
+  p.innerHTML = `
+    <div class="page-label">${q.label}</div>
+    <div class="page-prompt">${q.prompt}</div>
+    <div class="slider-wrap">
+      <div class="slider-anchors"><div class="slider-anchor">${q.leftAnchor}</div><div class="slider-anchor">${q.rightAnchor}</div></div>
+      <input type="range" min="1" max="10" value="${val}" oninput="updateSlider(${idx},this.value)">
+      <div class="slider-value" id="sv-${idx}">${val} / 10</div>
+    </div>
+    <div class="nav-row"><div>${currentPage>1?'<button class="back-btn" onclick="prevPage()">← Back</button>':''}</div>
+    <div><button class="next-btn" onclick="nextPage()">Continue</button></div></div>`;
+}
+
+function updateSlider(idx,val) {
+  answers[idx]=parseInt(val);
+  document.getElementById('sv-'+idx).textContent=val+' / 10';
+}
+
+// --- Select All ---
+function renderSelectAllQ(idx,q) {
+  const p=createPage(idx); const sels=answers[idx]||{};
+  let html=q.items.map((it,ii)=>`
+    <div class="select-all-item ${sels[ii]?'selected':''}" onclick="toggleSA(${idx},${ii},this)">${it.text}</div>`).join('');
+  p.innerHTML = `
+    <div class="page-label">${q.label}</div>
+    <div class="page-prompt">${q.prompt}</div>
+    <div class="page-subtext">${q.subtext||'Select as many as apply.'}</div>
+    <div class="select-all-grid">${html}</div>
+    <div class="nav-row"><div>${currentPage>1?'<button class="back-btn" onclick="prevPage()">← Back</button>':''}</div>
+    <div><button class="next-btn" onclick="nextPage()">Continue</button></div></div>`;
+}
+
+function toggleSA(idx,ii,el) {
+  if(!answers[idx]) answers[idx]={};
+  answers[idx][ii]=!answers[idx][ii];
+  el.classList.toggle('selected');
+}
+
+// --- True/False ---
+function renderTFQ(idx,q) {
+  const p=createPage(idx); const sel=answers[idx];
+  p.innerHTML = `
+    <div class="page-label">${q.label}</div>
+    <div class="tf-statement">"${q.statement}"</div>
+    <div class="tf-buttons">
+      <div class="tf-btn ${sel===true?'selected':''}" onclick="selectTF(${idx},true,this)">TRUE</div>
+      <div class="tf-btn ${sel===false?'selected':''}" onclick="selectTF(${idx},false,this)">FALSE</div>
+    </div>
+    <div class="nav-row"><div>${currentPage>1?'<button class="back-btn" onclick="prevPage()">← Back</button>':''}</div><div></div></div>`;
+}
+
+function selectTF(idx,val,el) {
+  answers[idx]=val;
+  el.parentElement.querySelectorAll('.tf-btn').forEach(b=>b.classList.remove('selected'));
+  el.classList.add('selected');
+  autoAdvance();
+}
+
+// --- Email page removed — results show directly ---
+
+function sendToSheets(email) {
+  calculateScores();
+  const ranks={};
+  const labels={};
+  Object.keys(DIMENSIONS).forEach(dim=>{
+    const mx=dimMaxes[dim]||1;
+    const pct=dimScores[dim]/mx;
+    const r=Math.max(1,Math.min(7,Math.round(pct*7)));
+    ranks[dim]=r;
+    labels[dim]=RANK_LABELS[r];
+  });
+  const overallRank=Math.round(Object.values(ranks).reduce((a,b)=>a+b,0)/7);
+
+  const payload={
+    email:email,
+    agencyRank:ranks.agency,
+    clarityRank:ranks.clarity,
+    discernmentRank:ranks.discernment,
+    validationRank:ranks.validation,
+    valueRank:ranks.value,
+    securityRank:ranks.security,
+    powerRank:ranks.power,
+    overallRank:overallRank,
+    agencyLabel:labels.agency,
+    clarityLabel:labels.clarity,
+    discernmentLabel:labels.discernment,
+    validationLabel:labels.validation,
+    valueLabel:labels.value,
+    securityLabel:labels.security,
+    powerLabel:labels.power,
+    overallLabel:RANK_LABELS[overallRank],
+    rawScores:{...dimScores},
+    answers:{...answers}
+  };
+
+  fetch(SHEETS_ENDPOINT,{
+    method:'POST',
+    mode:'no-cors',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify(payload)
+  }).catch(err=>console.log('Sheet submission error:',err));
+}
+
+function saveResults() {
+  const email=document.getElementById('saveEmailInput').value;
+  if(!email||!email.includes('@')) return;
+  sendToSheets(email);
+  document.getElementById('saveForm').style.display='none';
+  document.getElementById('saveConfirm').style.display='block';
+}
+
+function retakeAssessment() {
+  if(!confirm('This will clear your current results. Are you sure?')) return;
+  Object.keys(answers).forEach(k=>delete answers[k]);
+  Object.keys(dimScores).forEach(k=>dimScores[k]=0);
+  Object.keys(appliedScores).forEach(k=>delete appliedScores[k]);
+  currentPage=0;
+  render();
+}
+
+// --- Results ---
+function renderResults() {
+  calculateScores();
+  const p=createPage('results'); p.classList.add('results-section');
+  const ranks={};
+  let highest={dim:'',rank:0}, lowest={dim:'',rank:8};
+  Object.keys(DIMENSIONS).forEach(d=>{
+    const mx=dimMaxes[d]||1;
+    const pct=dimScores[d]/mx;
+    const r=Math.max(1,Math.min(7,Math.round(pct*7)));
+    ranks[d]=r;
+    if(r>highest.rank) highest={dim:d,rank:r};
+    if(r<lowest.rank) lowest={dim:d,rank:r};
+  });
+  const overallRank=Math.round(Object.values(ranks).reduce((a,b)=>a+b,0)/7);
+  const overallPct=(overallRank/7)*100;
+
+  let dimsHTML=Object.entries(DIMENSIONS).map(([k,n])=>{
+    const r=ranks[k]; const pct=(r/7)*100;
+    return `<div class="dim-card"><div class="dim-card-header"><div class="dim-name">${n}</div><div class="dim-rank-badge">Rank ${r} · ${RANK_LABELS[r]}</div></div><div class="dim-bar"><div class="dim-bar-fill" style="width:${pct}%"></div></div><div class="dim-desc">${RANK_DESCRIPTIONS[k][r]}</div></div>`;
+  }).join('');
+
+  p.innerHTML = `
+    <div class="results-header"><div class="results-title">Your Effectiveness Profile</div><div class="results-subtitle">Here's what's operating underneath.</div></div>
+    <div class="overall-card"><div class="overall-label">OVERALL EFFECTIVENESS</div><div class="overall-rank-num">${overallRank}</div><div class="overall-rank-label">${RANK_LABELS[overallRank]}</div><div class="overall-bar"><div class="overall-bar-fill" style="width:${overallPct}%"></div></div><div class="overall-bar-labels"><span>Reactive</span><span>Sovereign</span></div></div>
+    <div class="callout-grid"><div class="callout-card"><div class="callout-label strength">YOUR STRENGTH</div><div class="callout-dim">${DIMENSIONS[highest.dim]}</div><div class="callout-rank">Rank ${highest.rank} · ${RANK_LABELS[highest.rank]}</div></div><div class="callout-card"><div class="callout-label growth">GROWTH EDGE</div><div class="callout-dim">${DIMENSIONS[lowest.dim]}</div><div class="callout-rank">Rank ${lowest.rank} · ${RANK_LABELS[lowest.rank]}</div></div></div>
+    <div class="dim-grid">${dimsHTML}</div>
+
+    <div class="results-actions">
+      <div class="results-action-card">
+        <div class="results-action-title">Save Your Results</div>
+        <div class="results-action-desc">Get your full effectiveness profile sent to your inbox. We'll also send you insights on your specific dimension ranks.</div>
+        <div id="saveForm">
+          <div class="save-input-row">
+            <input type="email" class="email-input" id="saveEmailInput" placeholder="your@email.com" onkeydown="if(event.key==='Enter')saveResults()">
+            <button class="results-action-btn" onclick="saveResults()">Save</button>
+          </div>
+          <div class="email-consent">By submitting, you consent to receive emails from Mind Blade. Unsubscribe anytime.</div>
+        </div>
+        <div class="save-confirm" id="saveConfirm">✓ Results saved. Check your inbox.</div>
+      </div>
+
+      <div class="results-action-card">
+        <div class="results-action-title">Walk Through Your Results</div>
+        <div class="results-action-desc">Book a free 30-minute call to discuss your profile — what your ranks mean, what's driving them, and what you can do about it.</div>
+        <a href="${CALENDAR_URL}" target="_blank" rel="noopener" class="results-action-btn secondary">Book a Free Call</a>
+      </div>
+
+      <div class="results-action-card">
+        <div class="results-action-title">Retake the Assessment</div>
+        <div class="results-action-desc">Want to answer differently? Start over with a fresh set of responses. Your current results will be cleared.</div>
+        <button class="results-action-btn muted" onclick="retakeAssessment()">Start Over</button>
+      </div>
+    </div>`;
+}
+
+// ============================================================
+// NAV
+// ============================================================
+function nextPage() { if(!advancing||currentPage===0){currentPage++;render();} }
+function prevPage() { if(currentPage>1){currentPage--;render();} }
+function toggleModal() { document.getElementById('modal').classList.toggle('open'); }
+
+// Close modal on overlay click
+document.getElementById('modal').addEventListener('click',function(e){if(e.target===this)this.classList.remove('open');});
+
+// ============================================================
+// INIT
+// ============================================================
+render();
+</script>
+</body>
+</html>
